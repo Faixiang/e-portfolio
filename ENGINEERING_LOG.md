@@ -13,5 +13,6 @@
 - 交互组件：技能筛选器、作品灯箱、导航高亮 3 项 R5 互动元件已实现；含 Canvas 代码雨、打字机、点击粒子、卡片闪光、故障字效等。
 - 内容填充：experience 页第一条时间轴「兼職翻新學院網站負責人之一（2026-06 至 2026-08）」已写入。
 - 版本管理：创建 GitHub 专属仓库 Faixiang/e-portfolio（private），本日版本首传。
+- 资产对齐：7 页 HTML、style.css、main.js、favicon.svg 已与本地真实版本逐一对齐上传；woff2 字体因二进制格式待后续 git 上传。
 
 ---
