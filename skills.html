@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>專精技能 — 彭靖男 PENG Jing Nan</title>
+  <meta name="description" content="彭靖男的技能篩選器與熟練度進度條。">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header>
+    <nav class="nav" aria-label="主導覽">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__brand">PENG Jing Nan</a>
+        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
+        <ul class="nav__list" id="nav-list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
+          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
+          <li><a href="education.html" class="nav__link">教育背景</a></li>
+          <li><a href="skills.html" class="nav__link">專精技能</a></li>
+          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
+          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <h1 class="page-header__title">專精技能</h1>
+      <p class="page-header__lead">依類別篩選技能，並以進度條顯示熟練度。</p>
+    </section>
+
+    <div class="page">
+
+      <!-- 篩選按鈕列 -->
+      <div class="filterbar" role="group" aria-label="技能篩選">
+        <button type="button" class="filterbar__btn is-selected" data-filter="all">全部</button>
+        <button type="button" class="filterbar__btn" data-filter="frontend">前端</button>
+        <button type="button" class="filterbar__btn" data-filter="backend">後端</button>
+        <button type="button" class="filterbar__btn" data-filter="design">設計</button>
+        <button type="button" class="filterbar__btn" data-filter="other">其他</button>
+      </div>
+
+      <section class="panel">
+        <h2 class="panel__title">技能</h2>
+        <div class="skillbars" id="skill-list">
+
+          <div class="skillrow" data-category="frontend">
+            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
+            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
+            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
+          </div>
+
+          <div class="skillrow" data-category="backend">
+            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
+            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
+            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
+          </div>
+
+          <div class="skillrow" data-category="design">
+            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
+            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
+            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
+          </div>
+
+          <div class="skillrow" data-category="other">
+            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
+            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
+            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
