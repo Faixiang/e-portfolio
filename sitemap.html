@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Map — 彭靖男 PENG Jing Nan</title>
+  <meta name="description" content="本站地圖與需求對照表（CIS222 Individual Assignment）。">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header>
+    <nav class="nav" aria-label="主導覽">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__brand">PENG Jing Nan</a>
+        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
+        <ul class="nav__list" id="nav-list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
+          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
+          <li><a href="education.html" class="nav__link">教育背景</a></li>
+          <li><a href="skills.html" class="nav__link">專精技能</a></li>
+          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
+          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <h1 class="page-header__title">Site Map</h1>
+      <p class="page-header__lead">本站的完整地圖，以及 CIS222 教材需求對照表。</p>
+    </section>
+
+    <div class="page">
+      <section class="panel">
+        <h2 class="panel__title">網站地圖</h2>
+        <ul class="sitemap">
+          <li class="sitemap__node">
+            <a class="sitemap__link" href="index.html">Home</a>
+            <p class="sitemap__desc">首頁：主視覺與內容導覽。</p>
+            <ul class="sitemap__children">
+              <li class="sitemap__node">
+                <a class="sitemap__link" href="personal.html">個人資訊</a>
+                <p class="sitemap__desc">基本資料、語言能力與興趣。</p>
+              </li>
+              <li class="sitemap__node">
+                <a class="sitemap__link" href="experience.html">工作經驗</a>
+                <p class="sitemap__desc">以時間軸列出的經歷與職責。</p>
+              </li>
+              <li class="sitemap__node">
+                <a class="sitemap__link" href="education.html">教育背景</a>
+                <p class="sitemap__desc">學歷與相關課程。</p>
+              </li>
+              <li class="sitemap__node">
+                <a class="sitemap__link" href="skills.html">專精技能</a>
+                <p class="sitemap__desc">技能篩選器與熟練度。</p>
+              </li>
+              <li class="sitemap__node">
+                <a class="sitemap__link" href="portfolio.html">作品集</a>
+                <p class="sitemap__desc">專案縮圖、說明與燈箱。</p>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel__title">需求對照表</h2>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">教材要求</th>
+                <th scope="col">對應頁面 / 做法</th>
+                <th scope="col">狀態</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>至少 5 頁</td>
+                <td>7 頁（index / personal / experience / education / skills / portfolio / sitemap）</td>
+                <td>已完成</td>
+              </tr>
+              <tr>
+                <td>導覽列</td>
+                <td>全站共用 .nav</td>
+                <td>已完成</td>
+              </tr>
+              <tr>
+                <td>Site Map</td>
+                <td>本頁（sitemap.html）</td>
+                <td>已完成</td>
+              </tr>
+              <tr>
+                <td>互動（R5）</td>
+                <td>技能篩選器 / 作品燈箱 / 導覽高亮</td>
+                <td>已完成</td>
+              </tr>
+              <tr>
+                <td>響應式（R6）</td>
+                <td>CSS clamp / media query / hamburger</td>
+                <td>已完成</td>
+              </tr>
+              <tr>
+                <td>內容（R3）</td>
+                <td>education / experience / personal / portfolio 實質內容</td>
+                <td>待素材</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
