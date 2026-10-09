@@ -1,0 +1,1284 @@
+/* ============================================================
+   e-Portfolio — 彭靖男 PENG Jing Nan
+   CIS222 Individual Assignment · 全站共用樣式表
+   ------------------------------------------------------------
+   結構：
+   1. 設計變數（配色、字體、間距、斷點）
+   2. 重設與基礎
+   3. 導覽列（含 hamburger）
+   4. 首頁主視覺（含故障字效）
+   5. 卡片網格（含點擊閃光）
+   6. 內容頁共用區塊
+   7. 其他元件
+   8. 特效層（Canvas 背景、光暈、粒子）
+   9. 頁尾
+   10. 響應式（R6）
+   ============================================================ */
+
+
+/* ===== 1. 設計變數 ===== */
+/* ============================================================
+   自嵌字體：Press Start 2P（像素字體，零外部依賴）
+   ------------------------------------------------------------
+   來源：Google Fonts 的 latin 子集，經 fontTools 裁剪至僅含
+        「PENG Jing Nan」所需的 9 個字元（EGJN Pain + 空格）。
+        12,512 → 2,624 bytes。字體檔放在同目錄的 ../fonts/，
+        隨網站一起打包，不需連線即可顯示。
+   ============================================================ */
+@font-face {
+  font-family: 'PressStartPixel';
+  /* 只提供 woff2；不支援的舊瀏覽器會自動跳過此 @font-face，
+     副標會退回 Courier New monospace，不影響版面。 */
+  src: url('../fonts/pressstart-full.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  /* 只用於副標，載入失敗時不應阻塞頁面 */
+  font-display: swap;
+}
+
+
+:root {
+  /* --- 配色：純黑 + 螢光綠（Matrix 風格）---
+     來源：marvis_matrix.html 的配色方案。
+     四階綠（由亮到暗）：
+       --primary      #0f0   主色・螢光綠
+       --accent       #4efd4e 高亮綠（強調、hover）
+       --text         #9f9   內文綠
+       --text-muted   #4a4   次要文字（頁尾、裝飾）
+     ⚠️ 教材 R9 要求「淺色背景 + good contrast」，本組為深色。
+        三階綠對黑底的對比：#0f0 ≈ 18.4:1、#9f9 ≈ 10.4:1、#4a4 ≈ 2.9:1
+        —— #4a4 僅用於頁尾與裝飾字，不承載重要內容。
+        若需切回淺底版本，僅改動本區塊即可。 */
+  --primary: #0f0;           /* 主色・螢光綠 */
+  --accent: #4efd4e;         /* 高亮綠：hover 與強調 */
+  --accent-dim: #00a000;     /* 暗綠：進度條底、邊框 */
+  --text: #9f9;              /* 內文：亮綠（對黑底 10.4:1） */
+  --text-dim: #4a4;          /* 次要文字・頁尾 */
+  --text-faint: #373;        /* 裝飾字・極低調 */
+  --bg: #000000;             /* 純黑背景 */
+  --surface: #050805;         /* 卡片表面：近黑 */
+  --surface-2: rgba(0, 255, 0, 0.06);  /* 半透明綠底 */
+  --border: rgba(0, 255, 0, 0.3);      /* 綠色邊框 */
+  --border-strong: rgba(0, 255, 0, 0.5);
+  --danger: #ff0033;         /* 故障字效的紅 */
+  --glow: #0f0;              /* 光暈 / 粒子 */
+
+  /* --- 字體 --- */
+  --font-base: 'Segoe UI', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  --font-mono: 'Consolas', 'Courier New', monospace;
+  /* 副標題字級基準：主標題以 calc(var(--subtitle-size) * N) 綁定比例 */
+  --subtitle-size: clamp(0.75rem, 1.6vw, 1.15rem);
+
+  /* --- 間距 --- */
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3.5rem;
+  --radius: 10px;
+
+  /* --- 斷點（R6）--- */
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+
+  /* 內容最大寬度 —— 不用固定 px 寬度，讓版面自然收放 */
+  --content-max: 60rem;
+}
+
+
+/* ===== 2. 重設與基礎 ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  /* R6：用相對單位，窄螢幕自然縮排，不需另寫 media query */
+  font-size: 1rem;
+  line-height: 1.7;
+  font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.3;
+  margin: 0 0 var(--spacing-md);
+  font-weight: 600;
+}
+
+p {
+  margin: 0 0 var(--spacing-md);
+}
+
+a {
+  color: var(--primary);
+}
+
+img {
+  /* R6 + R8：圖片不撐破容器 */
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* ===== 3. 導覽列 ===== */
+.nav {
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 10;            /* 高於光暈(z-index:0)，確保可讀 */
+}
+
+.nav__inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.nav__brand {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  font-size: 1.05rem;
+  text-decoration: none;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.nav__list {
+  list-style: none;
+  display: flex;
+  gap: var(--spacing-md);
+  margin: 0;
+  padding: 0;
+}
+
+.nav__link {
+  text-decoration: none;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+/* hover 與 active 狀態：R5 互動元件 ③ 的基礎樣式 */
+.nav__link:hover {
+  color: var(--primary);
+  border-bottom-color: var(--accent);
+}
+
+.nav__link.is-active {
+  color: var(--primary);
+  font-weight: 600;
+  border-bottom-color: var(--primary);
+}
+
+
+/* ===== 4. 首頁主視覺 ===== */
+.hero {
+  /* 主視覺不限於內容容器（--content-max 60rem），
+     因為遊戲標題式的超大標題需要盡量吃滿視窗寬度。
+     內文元素（.hero__desc 等）另以 max-width 收斂，避免行文過長。 */
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+  text-align: center;
+  position: relative;
+  z-index: 1;          /* 高於光暈，確保文字清晰（R9 對比） */
+}
+
+.hero__eyebrow {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: var(--spacing-sm);
+}
+
+
+/* 呼吸動畫同步循環陰影強度 —— 否則動畫一開始
+   就會把 .hero__title 的多層陰影覆蓋掉。 */
+@keyframes title-breathe {
+  0%, 100% {
+    opacity: 1;
+    text-shadow:
+      0 0 4px rgba(0, 255, 0, 0.9),
+      0 0 10px rgba(0, 255, 0, 0.7),
+      0 0 26px rgba(0, 255, 0, 0.5),
+      0 4px 12px rgba(0, 0, 0, 0.9);
+  }
+  50% {
+    opacity: 0.78;
+    text-shadow:
+      0 0 3px rgba(0, 255, 0, 0.55),
+      0 0 7px rgba(0, 255, 0, 0.4),
+      0 0 16px rgba(0, 255, 0, 0.28),
+      0 4px 12px rgba(0, 0, 0, 0.9);
+  }
+}
+
+.hero__subtitle {
+  /* 真正的像素點陣字體，非等寬粗體模擬 */
+  font-family: 'PressStartPixel', 'Courier New', monospace;
+  font-size: var(--subtitle-size);
+  font-weight: 400;
+  letter-spacing: 0;
+
+  /* 貼合主題的螢光綠 */
+  color: var(--primary);
+
+  /* 黑邊立體投影：兩個偏移疊出下方厚度，
+     再加一層螢光外暈造 CRT 輝光。 */
+  text-shadow:
+    2px 2px 0 #000,          /* 近距離黑邊：造立體厚度 */
+    4px 4px 0 rgba(0, 0, 0, 0.85),
+    0 0 10px rgba(0, 255, 0, 0.5);   /* 螢光外暈 */
+
+  margin-bottom: var(--spacing-lg);
+}
+
+.hero__desc {
+  max-width: 34rem;
+  margin: 0 auto var(--spacing-lg);
+  color: var(--text-dim);
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.6rem;
+  background-color: var(--primary);
+  color: #000;
+  text-decoration: none;
+  border-radius: var(--radius);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn:hover {
+  background-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+
+/* ===== 5. 卡片網格 ===== */
+.page {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+  position: relative;
+  z-index: 1;          /* 高於光暈 */
+}
+
+.page-header {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md) var(--spacing-md);
+  position: relative;
+  z-index: 1;          /* 高於光暈 */
+}
+
+.section-title {
+  font-size: 1.6rem;
+  margin-bottom: var(--spacing-sm);
+  /* Matrix 螢光暈 */
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+}
+
+.section-lead {
+  color: var(--text-dim);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* 圖片佔位區（暫代圖片，之後可換成 <img>） */
+
+
+/* ===== 6. 內容頁共用區塊 ===== */
+.page-header__title {
+  font-size: 1.9rem;
+  margin-bottom: var(--spacing-sm);
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+}
+
+.page-header__lead {
+  color: var(--text-dim);
+  max-width: 38rem;
+}
+
+.panel {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.panel__title {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-md);
+  text-shadow: 0 0 6px rgba(0, 255, 0, 0.35);
+}
+
+/* 定義列表：適合「術語 — 說明」這種成對資料 */
+.deflist {
+  margin: 0;
+}
+
+.deflist__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) var(--spacing-lg);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.deflist__row:last-child {
+  border-bottom: none;
+}
+
+.deflist__term {
+  flex: 0 0 10rem;
+  font-weight: 600;
+}
+
+.deflist__desc {
+  flex: 1 1 16rem;
+  color: var(--text-dim);
+}
+
+/* 時間軸：經歷頁用 */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline__item {
+  position: relative;
+  padding: 0 0 var(--spacing-lg) 1.6rem;
+  border-left: 2px solid var(--border);
+}
+
+.timeline__item:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.timeline__item::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 0.5rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary);
+}
+
+.timeline__period {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.timeline__title {
+  font-size: 1.1rem;
+  margin: 0.15rem 0 0.35rem;
+}
+
+.timeline__desc {
+  color: var(--text-dim);
+  margin-bottom: 0;
+}
+
+
+/* ===== 6b. 其他元件 ===== */
+
+/* 個人照片 */
+.portrait {
+  margin: 0;
+  max-width: 18rem;
+}
+
+.portrait__ph {
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(135deg, #0d1a0d, #001100);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f0;
+  font-size: 0.9rem;
+}
+
+.portrait__cap {
+  margin-top: var(--spacing-sm);
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* 熟練度進度條 */
+.skillbars {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.skillbar__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.92rem;
+}
+
+.skillbar__track {
+  height: 0.5rem;
+  background-color: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.skillbar__fill {
+  display: block;
+  height: 100%;
+  background-color: var(--primary);
+  border-radius: 999px;
+}
+
+/* 標籤列表 */
+.taglist {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin: 0;
+  padding: 0;
+}
+
+.tag {
+  background-color: var(--surface-2);
+  color: var(--primary);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+/* 篩選按鈕列 —— 互動 ① 的視覺 */
+.filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.filterbar__btn {
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-dim);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filterbar__btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.filterbar__btn.is-selected {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #000;
+}
+
+/* 技能列 */
+.skillrow {
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.skillrow:last-child {
+  border-bottom: none;
+}
+
+.skillrow__name {
+  font-size: 1.02rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 6px rgba(0, 255, 0, 0.35);
+}
+
+.skillrow__note {
+  margin: 0.5rem 0 0;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* 表格 */
+.table-wrap {
+  overflow-x: auto; /* R6：窄螢幕時表格可橫向捲動，不撐破版面 */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.table th {
+  background-color: var(--surface-2);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 作品格 */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.work {
+  margin: 0;
+}
+
+.work__trigger {
+  display: block;
+  text-decoration: none;
+}
+
+.work__ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, #0a140a, #001000);
+  border-radius: var(--radius);
+  transition: transform 0.2s;
+}
+
+.work__trigger:hover .work__ph {
+  transform: scale(1.03);
+}
+
+.work__phlabel {
+  color: #0f0;
+  font-size: 0.9rem;
+}
+
+.work__cap {
+  margin-top: var(--spacing-sm);
+  font-size: 0.92rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.work__cap span {
+  color: var(--text-dim);
+}
+
+/* 燈箱 —— 互動 ② */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  z-index: 100;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox__panel {
+  position: relative;
+  background-color: var(--surface);
+  border-radius: var(--radius);
+  padding: var(--spacing-md);
+  max-width: 44rem;
+  width: 100%;
+}
+
+.lightbox__img {
+  width: 100%;
+  border-radius: calc(var(--radius) - 2px);
+  background: linear-gradient(135deg, #0a140a, #001000);
+  min-height: 12rem;
+}
+
+.lightbox__caption {
+  margin: var(--spacing-md) 0 0;
+  color: var(--text-dim);
+  font-size: 0.92rem;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.lightbox__close:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* 證書列表 */
+.certlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-sm) var(--spacing-lg);
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cert:last-child {
+  border-bottom: none;
+}
+
+.cert__name {
+  flex: 1 1 14rem;
+}
+
+.cert__issuer,
+.cert__year {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+/* Sitemap 樹狀結構 —— R4 */
+.sitemap,
+.sitemap__children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sitemap__children {
+  margin-left: var(--spacing-md);
+  padding-left: var(--spacing-md);
+  border-left: 2px solid var(--border);
+}
+
+.sitemap__node {
+  padding: var(--spacing-sm) 0;
+}
+
+.sitemap__link {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sitemap__link:hover {
+  text-decoration: underline;
+}
+
+.sitemap__desc {
+  margin: 0.2rem 0 0;
+  color: var(--text-dim);
+  font-size: 0.92rem;
+}
+
+
+/* ===== 3b. Hamburger 導覽（mobile-first）=====
+   桌面版隱藏按鈕、顯示橫向清單；
+   768px 以下顯示按鈕、清單預設收起，由 .is-open 控制展開。
+   ============================================ */
+.nav__toggle {
+  display: none;            /* mobile-first：預設不顯示，768px 以上才顯示 */
+  font: inherit;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0.35rem 0.6rem;
+  background-color: var(--surface);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.nav__toggle:hover {
+  border-color: var(--primary);
+}
+
+
+/* ===== 8. 特效層 ===== */
+
+/* Canvas 代碼雨：置於頁面底層，不攔截任何點擊 */
+.canvas-bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;              /* 關鍵：確保在內容之下 */
+  pointer-events: none;     /* 不影響任何互動 */
+}
+
+/* 鼠標跟隨光暈
+   比照 marvis_matrix.html 的 mix-blend-mode: screen 疊加手法，
+   在淺底上以螢光綠 additive 混合，營造 CRT 光暈感。 */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+              rgba(0, 255, 0, 0.25) 0%,
+              transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.cursor-glow.is-active {
+  opacity: 1;
+}
+
+/* 點擊粒子（JS 動態插入，動畫結束後自動移除） */
+.particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  animation: particle-fade 0.6s ease-out forwards;
+}
+
+@keyframes particle-fade {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.2); }
+}
+
+/* 卡片點擊閃光：JS 加 .is-flash 後觸發一次
+   手法比照 marvis_matrix.html：邊框轉白＋ 外發光暈 */
+.skillrow.is-flash,
+.work.is-flash {
+  animation: card-flash 0.25s ease-out;
+}
+
+@keyframes card-flash {
+  0% {
+    border-color: #fff;
+    box-shadow: 0 0 24px rgba(0, 255, 0, 0.9);
+  }
+  100% {
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+  }
+}
+
+/* ===== 主標：三層切片 +逐字波浪浮動 =====
+   ------------------------------------------------------------
+   三層結構（不使用偽元素，改用 span）：
+     .gl-layer--base  白綠原文字，佔位維持版面
+     .gl-layer--lime  亮綠，切上段
+     .gl-layer--dim   暗綠，切下段
+   每層都由 JS 拆成逐字 .gl-char，並以相同的 --i 索引套用
+   相同 delay，因此三層的「波」完全對齊。
+
+   波浪原理：每個字依 --i 延後 animation-delay，
+   形成由左至右推進的正弦波，而非整體同步上下。
+   ========================================== */
+.hero__title {
+  position: relative;
+  display: inline-block;
+  /* 字級自適應視窗寬度（R6）
+     font-size: clamp(最小值, 理想值, 最大值)
+     · 最小 1.5rem — 手機窄屏仍清晰可讀
+     · 理想 9vw   — 隨視窗寬度等比放大
+     · 最大 15rem — 約 240px；兩行合計高度需留版面空間
+
+     注意：不可用「%」當理想值 —— font-size 的百分比是
+     相對「父元素字級」，不是容器寬度，會算出約 30px 的過小值。
+     理想值必須用 vw（視窗單位）或 cqw（容器查詢單位）。 */
+  font-size: calc(var(--subtitle-size) * 4.5);
+  margin-bottom: 0.25rem;
+  font-family: 'PressStartPixel', 'Courier New', monospace;
+
+  /* 全大寫。CSS 與 JS 雙邊都做：
+     CSS 處理未執行 JS 的情況，JS 在拆層前 .toUpperCase()。
+     兩者缺一，三層 span 都會顯示原始大小寫。 */
+  text-transform: uppercase;
+
+  /* ===== 像素化處理（零外部依賴）=====
+     系統無真正的點陣字體，故用 CSS 近似：
+     ① -webkit-font-smoothing: none — 關掉字體抗鋸齒，
+        讓邊緣變成硬階梯，是像素感最主要的來源。
+     ② font-weight: 700 — 加重筆畫，粗體邊緣更接近點陣塊。
+     ③ letter-spacing — 略增字距讓每格分離，像字元格。
+     ④ 疊加 text-shadow 形成 1px 硬邊光暈（見下方）。 */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+
+  /* 大寫字母較寬，略增字距讓字距更均勻 */
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--text);
+
+  /* 多層字體陰影：近距離硬陰影造立體感 + 遠距離螢光暈造 CRT 輝光。
+     四層依序：近硬 → 稍遠 → 中暈 → 大範圍環境光。 */
+  text-shadow:
+    0 0 4px rgba(0, 255, 0, 0.9),
+    0 0 10px rgba(0, 255, 0, 0.7),
+    0 0 26px rgba(0, 255, 0, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.9);
+
+  /* 父層只做呼吸（動 opacity 與 text-shadow），
+     上下浮動交給每個 .gl-char，避免 transform 被覆蓋。
+     呼吸動畫會覆寫 text-shadow，故在 keyframes 內另行定義。 */
+  animation: title-breathe 2.4s ease-in-out infinite;
+}
+
+/* 三層共用定位
+   用 inline-block而非 flex —— 換行需靠 <br>，
+   flex 會把 <br> 當成 flex item 而忽略換行效果。
+   文字靠 .gl-layer 的 text-align: center 置中。 */
+.gl-layer {
+  display: block;
+  text-align: center;
+  white-space: normal;      /* 允許換行 */
+}
+
+.gl-layer--base {
+  position: relative;
+}
+
+.gl-layer--lime,
+.gl-layer--dim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 亮綠層：切上段 */
+.gl-layer--lime {
+  color: var(--accent);
+  clip-path: inset(20% 0 55% 0);
+  animation: glitch-slice-lime 2.4s infinite linear alternate-reverse;
+}
+
+/* 暗綠層：切下段 */
+.gl-layer--dim {
+  color: var(--accent-dim);
+  clip-path: inset(60% 0 10% 0);
+  animation: glitch-slice-dim 1.8s infinite linear alternate-reverse;
+}
+
+/* ===== 逐字波浪 =====
+   每個字依序延後 0.07s，形成由左至右推進的波浪。
+   週期 1.8s、單字行程 30px（−15px ↔ +15px），速度快且起伏明顯。 */
+.gl-char {
+  display: inline-block;
+  animation: char-wave 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.07s);
+  /* 每字獨立的水平外距，讓換行時兩行各自置中 */
+  margin: 0 0.02em;
+}
+
+@keyframes char-wave {
+  0%, 100% { transform: translateY(-15px); }
+  50%      { transform: translateY(15px); }
+}
+
+@keyframes glitch-slice-lime {
+  0%   { clip-path: inset(10% 0 60% 0); }
+  20%  { clip-path: inset(80% 0  5% 0); }
+  40%  { clip-path: inset(30% 0 40% 0); }
+  60%  { clip-path: inset(50% 0 30% 0); }
+  80%  { clip-path: inset(70% 0 15% 0); }
+  100% { clip-path: inset(20% 0 65% 0); }
+}
+
+@keyframes glitch-slice-dim {
+  0%   { clip-path: inset(70% 0 10% 0); }
+  25%  { clip-path: inset(15% 0 70% 0); }
+  50%  { clip-path: inset(45% 0 40% 0); }
+  75%  { clip-path: inset(85% 0  5% 0); }
+  100% { clip-path: inset(30% 0 55% 0); }
+}
+
+
+/* 尊重使用者的「減少動態效果」設定
+   —— 可及性要求，也是效能低的裝置的逃生門 */
+/* 動效降級處理
+   ------------------------------------------------------------
+   註：原設計會在 prefers-reduced-motion: reduce 時隱藏 canvas 與光暈，
+   但這導致使用者即使已開啟動畫設定、JS 也正常建立元素，
+   畫面上仍完全看不到特效（元素被 display:none 蓋掉）。
+
+   本網站的Canvas 代碼雨是視覺主題核心，不屬於裝飾性動畫，
+   因此不再依此設定關閉。僅保留過渡動畫的簡化，
+   讓操作回饋在低動態環境下仍即時可見。 */
+@media (prefers-reduced-motion: reduce) {
+  .work__ph,
+  .btn,
+  .nav__link,
+  .filterbar__btn,
+  .work__trigger .work__ph {
+    transition: none;
+  }
+}
+
+
+/* ===== 5b. 3D 旋轉輪盤（首頁內容導覽）=====
+   幾何結構移植自「能力輪盤 · DeepSeek」：
+     .carousel-scene 設perspective，建立視距
+     .carousel 設 preserve-3d，開啟 3D 空間
+     每張卡用 nth-child 指定 rotateY(角度) translateZ(半徑)
+     —— rotateY讓卡片轉向，translateZ 把它推離軸心形成環
+
+   六張卡 → 角度間隔 360 ÷ 6 = 60°，translateZ 300px
+   （原檔為五張、72°、translateZ 300px）
+   ========================================== */
+.carousel-scene {
+  position: relative;
+  width: 100%;
+  height: 26rem;
+  perspective: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;      /* 關鍵：沒有這行 translateZ 完全無效 */
+  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.carousel__card {
+  position: absolute;
+  width: 13rem;
+  height: 17.5rem;
+  left: 50%;
+  top: 50%;
+  margin-left: -6.5rem;                /* 用負margin 做水平置中 */
+  margin-top: -8.75rem;                /* 用負 margin 做垂直置中 */
+  border-radius: 2rem;
+
+  /* 半透明 + 模糊：讓後方代碼雨透出疊在卡片上 */
+  background: rgba(0, 40, 10, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 255, 0, 0.35);
+
+  box-shadow: 0 1.5rem 3rem -0.75rem rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text);
+  backface-visibility: visible;        /* 背面可見，不要翻轉隱藏 */
+  transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
+  cursor: pointer;
+}
+
+/* ===== 幾何核心：六張卡環繞圓周 =====
+   角度間隔 60°（360 ÷ 6），半徑 translateZ 300px。
+   順序不可顛倒：先 rotateY 轉向，再 translateZ 推離軸心。 */
+.carousel__card:nth-child(1) { transform: rotateY(0deg)   translateZ(300px); }
+.carousel__card:nth-child(2) { transform: rotateY(60deg)  translateZ(300px); }
+.carousel__card:nth-child(3) { transform: rotateY(120deg) translateZ(300px); }
+.carousel__card:nth-child(4) { transform: rotateY(180deg) translateZ(300px); }
+.carousel__card:nth-child(5) { transform: rotateY(240deg) translateZ(300px); }
+.carousel__card:nth-child(6) { transform: rotateY(300deg) translateZ(300px); }
+
+/* hover / focus 時卡片亮起，提示可點擊 */
+.carousel__card:hover,
+.carousel__card:focus-visible {
+  border-color: var(--accent);
+  background: rgba(0, 60, 15, 0.75);
+  box-shadow: 0 0 1.5rem rgba(0, 255, 0, 0.45);
+  outline: none;
+}
+
+/* 卡片內的圖示框 */
+.carousel__icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 255, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--primary);
+  background: rgba(0, 255, 0, 0.08);
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+}
+
+.carousel__title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--primary);
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+.carousel__desc {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* 輪盤下方的操作提示 */
+.carousel__hint {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  font-family: var(--font-mono);
+  margin-top: 1rem;
+}
+
+/* 指標點：可點擊跳至該卡 */
+.carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.carousel__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--primary);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.25s, transform 0.25s;
+}
+
+.carousel__dot:hover {
+  background: var(--accent);
+}
+
+.carousel__dot.is-active {
+  background: var(--primary);
+  transform: scale(1.3);
+}
+
+/* 卡片在正前方時標題加強螢光，讓焦點明確 */
+.carousel__card.is-front .carousel__title {
+  text-shadow: 0 0 14px rgba(0, 255, 0, 0.9);
+}
+
+
+/* ===== 5c. 次要分段（首頁下方）===== */
+.section-band {
+  border-top: 1px solid var(--border);
+  margin-top: var(--spacing-xl);
+}
+
+.band-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: var(--spacing-md);
+}
+
+.band-item {
+  border: 1px solid var(--border);
+  background: rgba(0, 255, 0, 0.03);
+  border-radius: var(--radius);
+  padding: var(--spacing-md);
+}
+
+.band-item__title {
+  font-size: 0.95rem;
+  color: var(--primary);
+  margin-bottom: 0.35rem;
+  text-shadow: 0 0 6px rgba(0, 255, 0, 0.35);
+}
+
+.band-item__desc {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+
+/* ===== 7. 頁尾 ===== */
+.footer {
+  border-top: 1px solid var(--border);
+  margin-top: var(--spacing-xl);
+  position: relative;
+  z-index: 1;          /* 高於光暈 */
+}
+
+.footer p {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md);
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  letter-spacing: 0.2em;          /* terminal 質感 */
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+
+/* ===== 10. 響應式（R6）=====
+   mobile-first：上方基礎樣式即為窄螢幕版，
+   以下 media query 由窄到寬逐層放寬。
+   斷點對應 :root 的 --breakpoint-md (768px) 與 --breakpoint-lg (1024px)。
+   ================================== */
+
+/* --- 768px 以下：導覽列以 hamburger 呈現 --- */
+.nav__inner {
+  position: relative;
+}
+
+.nav__toggle {
+  display: block;          /* 窄螢幕顯示 hamburger */
+}
+
+.nav__list {
+  display: none;           /* 窄螢幕預設收起 */
+  width: 100%;
+  flex-direction: column;
+  gap: 0;
+  margin-top: var(--spacing-sm);
+  border-top: 1px solid var(--border);
+  padding-top: var(--spacing-sm);
+}
+
+.nav__list.is-open {
+  display: flex;           /* JS 切換展開 */
+}
+
+.nav__list li {
+  width: 100%;
+}
+
+.nav__link {
+  display: block;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.nav__list li:last-child .nav__link {
+  border-bottom: none;
+}
+
+/* 480px：更緊湊的留白 */
+@media (max-width: 30rem) {
+  body { font-size: 0.95rem; }
+  .hero { padding: var(--spacing-lg) var(--spacing-md); }
+  .page,
+  .page-header { padding: var(--spacing-lg) var(--spacing-md); }
+  .panel { padding: var(--spacing-md); }
+  .timeline__item { padding-left: 1.2rem; }
+  .deflist__term { flex-basis: 100%; }
+}
+
+/* 窄螢幕：縮小輪盤避免超出視窗。
+   重點：translateZ 半徑也必須同步縮小 —— 卡片在 3D 空間中
+   會因透視放大，若只縮卡片尺寸仍會溢出（實測 375px 溢出 122px）。 */
+@media (max-width: 30rem) {
+  .carousel-scene { height: 20rem; }
+  .carousel { width: 10rem; height: 13rem; }
+  .carousel__card {
+    width: 10rem;
+    height: 13rem;
+    margin-left: -5rem;
+    margin-top: -6.5rem;
+    border-radius: 1.25rem;
+    gap: 0.35rem;
+    padding: 0.75rem;
+  }
+  /* 六張卡的角度不可少（維持環狀），但半徑縮小 */
+  .carousel__card:nth-child(1) { transform: rotateY(0deg)   translateZ(150px); }
+  .carousel__card:nth-child(2) { transform: rotateY(60deg)  translateZ(150px); }
+  .carousel__card:nth-child(3) { transform: rotateY(120deg) translateZ(150px); }
+  .carousel__card:nth-child(4) { transform: rotateY(180deg) translateZ(150px); }
+  .carousel__card:nth-child(5) { transform: rotateY(240deg) translateZ(150px); }
+  .carousel__card:nth-child(6) { transform: rotateY(300deg) translateZ(150px); }
+
+  .carousel__icon { width: 2.25rem; height: 2.25rem; font-size: 0.95rem; }
+  .carousel__title { font-size: 0.85rem; }
+  .carousel__desc { font-size: 0.65rem; }
+  .carousel__hint { font-size: 0.68rem; letter-spacing: 0.15em; }
+}
+
+/* --- 768px 以上：hamburger 收起，恢復橫向導覽 --- */
+@media (min-width: 768px) {
+  .nav__toggle { display: none; }
+
+  .nav__list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-md);
+    width: auto;
+    margin-top: 0;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .nav__list li { width: auto; }
+
+  .nav__link {
+    padding: var(--spacing-sm) 0;
+    border-bottom: 2px solid transparent;
+  }
+
+  .nav__list li:last-child .nav__link {
+    border-bottom: 2px solid transparent;
+  }
+
+}
+
+/* --- 1024px 以上：放寬留白 --- */
+@media (min-width: 1024px) {
+  .hero { padding: 5rem var(--spacing-md); }
+}

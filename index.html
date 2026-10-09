@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Myself E-Portfolio</title>
+  <meta name="description" content="個人 e-portfolio 首頁，連結個人資訊、工作經驗、教育背景、專精技能與作品集五個內容頁。">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- ===== header：導覽列 7 項，連結全部頁面（R2 在結構上自動成立）===== -->
+  <header>
+    <nav class="nav" aria-label="主導覽">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__brand">Myself E-Portfolio</a>
+        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
+        <ul class="nav__list" id="nav-list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
+          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
+          <li><a href="education.html" class="nav__link">教育背景</a></li>
+          <li><a href="skills.html" class="nav__link">專精技能</a></li>
+          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
+          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===== main ===== -->
+  <main>
+
+    <!-- 首頁主視覺 -->
+    <section class="hero">
+
+      <!-- 故障字效 + 打字機：data-text 供 CSS 疊層讀取，
+           data-typewriter 供 JS 讀取原文後清空並逐字填入 -->
+      <!-- 三層切片 glitch：底層白綠原文字 + 亮綠切片 + 暗綠切片
+           每層由JS 拆成逐字 span，並以相同的 --i 索引讓浮動完全對齊。
+           文字保留在元素內，JS 未執行時仍可正常閱讀。
+           「|」作為**行分隔符**（文字中不會出現此字元），JS 會轉成 <br>
+           讓三層一致斷行。注意：不可用 \n —— HTML 屬性不處理跳脫序列，
+           會被當成反斜線加字母 n 兩個字元。 -->
+      <h1 class="hero__title"
+          data-split="Myself|E-Portfolio"
+          aria-label="Myself E-Portfolio">Myself<br>E-Portfolio</h1>
+
+      <p class="hero__subtitle">PENG Jing Nan</p>
+      <p class="hero__desc">
+        主修 AI & ICT，以後的目標就是努力創造更多的AI產品，打造更多懒人科技
+      </p>
+      <a href="personal.html" class="btn">展示更多</a>
+    </section>
+
+    <!-- ===== 內容頁入口：3D 旋轉輪盤 =====
+         輪盤是首頁的導覽入口，點擊卡片仍跳轉到各自的獨立頁面，
+         因此 R3（各頁為獨立 html 檔）與 R2（頁面互連）皆不受影響。 -->
+    <section class="page">
+      <h2 class="section-title">內容導覽</h2>
+      <p class="section-lead">
+        拖曳輪盤或使用左右方向鍵切換，點擊卡片進入該頁。本站共七個頁面。
+      </p>
+
+      <div class="carousel-scene">
+        <div class="carousel" data-carousel>
+
+          <a href="personal.html" class="carousel__card">
+            <span class="carousel__icon" aria-hidden="true">01</span>
+            <h3 class="carousel__title">個人資訊</h3>
+            <p class="carousel__desc">基本資料、語言能力與興趣</p>
+          </a>
+
+          <a href="experience.html" class="carousel__card">
+            <span class="carousel__icon" aria-hidden="true">02</span>
+            <h3 class="carousel__title">工作經驗</h3>
+            <p class="carousel__desc">職位、期間與主要職責</p>
+          </a>
+
+          <a href="education.html" class="carousel__card">
+            <span class="carousel__icon" aria-hidden="true">03</span>
+            <h3 class="carousel__title">教育背景</h3>
+            <p class="carousel__desc">學歷、主修與相關課程</p>
+          </a>
+
+          <a href="skills.html" class="carousel__card">
+            <span class="carousel__icon" aria-hidden="true">04</span>
+            <h3 class="carousel__title">專精技能</h3>
+            <p class="carousel__desc">可篩選的技能分類與熟練度</p>
+          </a>
+
+          <a href="portfolio.html" class="carousel__card">
+            <span class="carousel__icon" aria-hidden="true">05</span>
+            <h3 class="carousel__title">作品集</h3>
+            <p class="carousel__desc">作品、專案與證書</p>
+          </a>
+
+          <a href="sitemap.html" class="carousel__card">
+            <span class="carousel__icon" aria-hidden="true">06</span>
+            <h3 class="carousel__title">Site Map</h3>
+            <p class="carousel__desc">全站結構與各頁用途</p>
+          </a>
+
+        </div>
+      </div>
+
+      <p class="carousel__hint">&lt;&lt; 拖曳或方向鍵 &gt;&gt;</p>
+
+      <div class="carousel__dots">
+        <button type="button" class="carousel__dot is-active" aria-label="前往個人資訊"></button>
+        <button type="button" class="carousel__dot" aria-label="前往工作經驗"></button>
+        <button type="button" class="carousel__dot" aria-label="前往教育背景"></button>
+        <button type="button" class="carousel__dot" aria-label="前往專精技能"></button>
+        <button type="button" class="carousel__dot" aria-label="前往作品集"></button>
+        <button type="button" class="carousel__dot" aria-label="前往 Site Map"></button>
+      </div>
+    </section>
+
+    <!-- ===== 次要分段：技術與規格 ===== -->
+    <section class="page section-band">
+      <h2 class="section-title">技術規格</h2>
+      <p class="section-lead">本網站以三種技術構成，並於桌面與行動裝置皆可正常使用。</p>
+
+      <div class="band-grid">
+
+        <article class="band-item">
+          <h3 class="band-item__title">HTML</h3>
+          <p class="band-item__desc">
+            語義化標籤結構：header、nav、main、section、article、figure、footer。
+            全站七個頁面各自獨立，連結皆為相對路徑。
+          </p>
+        </article>
+
+        <article class="band-item">
+          <h3 class="band-item__title">CSS</h3>
+          <p class="band-item__desc">
+            以變數集中管理配色與間距，採 mobile-first 響應式設計，
+            於 768px 與 1024px 兩個斷點調整排版。
+          </p>
+        </article>
+
+        <article class="band-item">
+          <h3 class="band-item__title">JavaScript</h3>
+          <p class="band-item__desc">
+            技能篩選、作品燈箱、導覽高亮、3D 輪盤與Canvas 背景動畫，
+            全部程式碼置於單一外部檔案。
+          </p>
+        </article>
+
+        <article class="band-item">
+          <h3 class="band-item__title">互動元件</h3>
+          <p class="band-item__desc">
+            技能分類篩選器、作品集燈箱、輪盤拖曳與鍵盤操作，
+            以及卡片點擊閃光回饋。
+          </p>
+        </article>
+
+        <article class="band-item">
+          <h3 class="band-item__title">響應式</h3>
+          <p class="band-item__desc">
+            於 375px、768px、1440px 三種寬度下驗證無橫向捲動，
+            導覽列於窄螢幕改為hamburger 展開。
+          </p>
+        </article>
+
+        <article class="band-item">
+          <h3 class="band-item__title">效能</h3>
+          <p class="band-item__desc">
+            Canvas 動畫限幀 30fps 並於分頁隱藏時暫停；
+            動畫元素於結束後自 DOM 移除，不累積記憶體。
+          </p>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== footer ===== -->
+  <footer class="footer">
+    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
