@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>作品集 — 彭靖男 PENG Jing Nan</title>
-  <meta name="description" content="彭靖男的作品集，含專案縮圖、說明與燈箱檢視。">
+  <meta name="description" content="彭靖男的作品集與證書紀錄，收錄課堂專案、個人練習與相關證書，支援點擊放大檢視。">
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -31,63 +31,105 @@
   <main>
     <section class="page-header">
       <h1 class="page-header__title">作品集</h1>
-      <p class="page-header__lead">點擊作品縮圖可放大檢視。</p>
+      <p class="page-header__lead">
+        收錄課堂專案與個人練習。點擊任一作品可放大檢視細節。
+      </p>
     </section>
 
     <div class="page">
+
+      <!-- ===== 互動 ②：作品燈箱（R5）===== -->
       <section class="panel">
-        <h2 class="panel__title">專案</h2>
+        <h2 class="panel__title">作品</h2>
+
         <div class="work-grid">
 
           <figure class="work">
-            <a class="work__trigger" href="#" data-lightbox data-img="" data-caption="">
-              <div class="work__ph">
-                <span class="work__phlabel"><!-- TODO: 縮圖或標題 --></span>
-              </div>
-              <figcaption class="work__cap">
-                <strong><!-- TODO: 專案名稱 --></strong>
-                <span><!-- TODO: 簡短說明 --></span>
-              </figcaption>
+            <a href="#"
+               class="work__trigger"
+               data-lightbox="assets/images/work-1.jpg"
+               data-alt="作品一的畫面截圖"
+               data-caption="作品一 · 說明文字">
+              <span class="work__ph" role="img" aria-label="作品一預覽">
+                <!-- TODO: 之後可換成 <img src="assets/images/work-1.jpg" alt="作品一的畫面截圖"> -->
+                <span class="work__phlabel">作品一</span>
+              </span>
             </a>
+            <figcaption class="work__cap">
+              <strong>作品一</strong>
+              <span><!-- TODO: 一句話說明這是什麼、用到什麼技術 --></span>
+            </figcaption>
           </figure>
 
           <figure class="work">
-            <a class="work__trigger" href="#" data-lightbox data-img="" data-caption="">
-              <div class="work__ph">
-                <span class="work__phlabel"><!-- TODO: 縮圖或標題 --></span>
-              </div>
-              <figcaption class="work__cap">
-                <strong><!-- TODO: 專案名稱 --></strong>
-                <span><!-- TODO: 簡短說明 --></span>
-              </figcaption>
+            <a href="#"
+               class="work__trigger"
+               data-lightbox="assets/images/work-2.jpg"
+               data-alt="作品二的畫面截圖"
+               data-caption="作品二 · 說明文字">
+              <span class="work__ph" role="img" aria-label="作品二預覽">
+                <span class="work__phlabel">作品二</span>
+              </span>
             </a>
+            <figcaption class="work__cap">
+              <strong>作品二</strong>
+              <span><!-- TODO: 說明文字 --></span>
+            </figcaption>
           </figure>
 
           <figure class="work">
-            <a class="work__trigger" href="#" data-lightbox data-img="" data-caption="">
-              <div class="work__ph">
-                <span class="work__phlabel"><!-- TODO: 縮圖或標題 --></span>
-              </div>
-              <figcaption class="work__cap">
-                <strong><!-- TODO: 專案名稱 --></strong>
-                <span><!-- TODO: 簡短說明 --></span>
-              </figcaption>
+            <a href="#"
+               class="work__trigger"
+               data-lightbox="assets/images/work-3.jpg"
+               data-alt="作品三的畫面截圖"
+               data-caption="作品三 · 說明文字">
+              <span class="work__ph" role="img" aria-label="作品三預覽">
+                <span class="work__phlabel">作品三</span>
+              </span>
             </a>
+            <figcaption class="work__cap">
+              <strong>作品三</strong>
+              <span><!-- TODO: 說明文字 --></span>
+            </figcaption>
           </figure>
 
+          <!-- TODO: 增減作品：每個 .work 內的 data-lightbox 指向對應圖片路徑 -->
         </div>
       </section>
+
+      <!-- 證書 -->
+      <section class="panel">
+        <h2 class="panel__title">證書</h2>
+        <ul class="certlist">
+          <li class="cert">
+            <strong class="cert__name"><!-- TODO: 證書名稱 --></strong>
+            <span class="cert__issuer"><!-- TODO: 頒發機構 --></span>
+            <span class="cert__year"><!-- TODO: 年份 --></span>
+          </li>
+          <li class="cert">
+            <strong class="cert__name"><!-- TODO: 證書名稱 --></strong>
+            <span class="cert__issuer"><!-- TODO: 頒發機構 --></span>
+            <span class="cert__year"><!-- TODO: 年份 --></span>
+          </li>
+          <li class="cert">
+            <strong class="cert__name"><!-- TODO: 證書名稱 --></strong>
+            <span class="cert__issuer"><!-- TODO: 頒發機構 --></span>
+            <span class="cert__year"><!-- TODO: 年份 --></span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 燈箱本體：預設隱藏，由 assets/js/main.js 控制 -->
+      <div class="lightbox" data-lightbox-overlay hidden>
+        <div class="lightbox__panel" role="dialog" aria-modal="true" aria-label="作品放大檢視">
+          <img src="" alt="" class="lightbox__img">
+          <p class="lightbox__caption" data-lightbox-caption></p>
+          <button type="button" class="lightbox__close" data-lightbox-close>關閉 ✕</button>
+        </div>
+      </div>
+
     </div>
   </main>
-
-  <!-- 燈箱 -->
-  <div class="lightbox" hidden>
-    <div class="lightbox__panel">
-      <button type="button" class="lightbox__close" aria-label="關閉">✕</button>
-      <img class="lightbox__img" src="" alt="">
-      <p class="lightbox__caption"></p>
-    </div>
-  </div>
 
   <footer class="footer">
     <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
