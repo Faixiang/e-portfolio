@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>專精技能 — 彭靖男 PENG Jing Nan</title>
-  <meta name="description" content="彭靖男的技能篩選器與熟練度進度條。">
+  <meta name="description" content="彭靖男的專精技能與熟練度，涵蓋前端開發、程式語言、資料處理與設計工具，可依分類篩選。">
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -31,49 +31,95 @@
   <main>
     <section class="page-header">
       <h1 class="page-header__title">專精技能</h1>
-      <p class="page-header__lead">依類別篩選技能，並以進度條顯示熟練度。</p>
+      <p class="page-header__lead">
+        下方可依分類篩選技能，目前顯示
+        <strong data-skill-count>7</strong> 項。
+      </p>
     </section>
 
     <div class="page">
 
-      <!-- 篩選按鈕列 -->
-      <div class="filterbar" role="group" aria-label="技能篩選">
-        <button type="button" class="filterbar__btn is-selected" data-filter="all">全部</button>
-        <button type="button" class="filterbar__btn" data-filter="frontend">前端</button>
-        <button type="button" class="filterbar__btn" data-filter="backend">後端</button>
-        <button type="button" class="filterbar__btn" data-filter="design">設計</button>
-        <button type="button" class="filterbar__btn" data-filter="other">其他</button>
-      </div>
-
+      <!-- ===== 互動 ①：技能篩選器（R5）===== -->
       <section class="panel">
-        <h2 class="panel__title">技能</h2>
-        <div class="skillbars" id="skill-list">
+        <h2 class="panel__title">技能分類</h2>
 
-          <div class="skillrow" data-category="frontend">
-            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
-            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
-            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
-          </div>
-
-          <div class="skillrow" data-category="backend">
-            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
-            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
-            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
-          </div>
-
-          <div class="skillrow" data-category="design">
-            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
-            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
-            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
-          </div>
-
-          <div class="skillrow" data-category="other">
-            <p class="skillbar__label"><!-- TODO: 技能名稱 --></p>
-            <div class="skillbar__track"><span class="skillbar__fill" style="width: 0%"></span></div>
-            <p class="skillrow__note"><!-- TODO: 補充說明 --></p>
-          </div>
-
+        <div class="filterbar" data-skill-filter>
+          <button type="button" class="filterbar__btn is-selected" data-category="all">全部</button>
+          <button type="button" class="filterbar__btn" data-category="web">前端開發</button>
+          <button type="button" class="filterbar__btn" data-category="lang">程式語言</button>
+          <button type="button" class="filterbar__btn" data-category="data">資料處理</button>
+          <button type="button" class="filterbar__btn" data-category="design">設計工具</button>
         </div>
+      </section>
+
+      <!-- ===== 技能清單：每項帶 data-category 供篩選 ===== -->
+      <section class="panel">
+        <h2 class="panel__title">技能與熟練度</h2>
+
+        <article class="skillrow" data-skill-item data-category="web">
+          <h3 class="skillrow__name">HTML / 語義化標籤</h3>
+          <div class="skillbar">
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:85%"></span></div>
+          </div>
+          <p class="skillrow__note">能正確使用 header / main / section / article / figure 等結構標籤。</p>
+        </article>
+
+        <article class="skillrow" data-skill-item data-category="web">
+          <h3 class="skillrow__name">CSS / Flexbox、Grid、Media Query</h3>
+          <div class="skillbar">
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:75%"></span></div>
+          </div>
+          <p class="skillrow__note">能以彈性版面與媒體查詢建立響應式佈局。</p>
+        </article>
+
+        <article class="skillrow" data-skill-item data-category="lang">
+          <h3 class="skillrow__name">JavaScript</h3>
+          <div class="skillbar">
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:65%"></span></div>
+          </div>
+          <p class="skillrow__note">DOM 操作、事件處理、元件顯示與隱藏。</p>
+        </article>
+
+        <article class="skillrow" data-skill-item data-category="lang">
+          <h3 class="skillrow__name">Python</h3>
+          <div class="skillbar">
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:70%"></span></div>
+          </div>
+          <p class="skillrow__note">資料處理、自動化腳本。</p>
+        </article>
+
+        <!-- TODO: 依你的實際技能增減項目，並同步上方篩選按鈕與顯示筆數 -->
+        <article class="skillrow" data-skill-item data-category="data">
+          <h3 class="skillrow__name">資料整理與分析</h3>
+          <div class="skillbar">
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:60%"></span></div>
+          </div>
+          <p class="skillrow__note">試算表處理、資料清理與歸納。</p>
+        </article>
+
+        <article class="skillrow" data-skill-item data-category="data">
+          <h3 class="skillrow__name">SQL / 資料庫</h3>
+          <div class="skillbar">
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:55%"></span></div>
+          </div>
+          <p class="skillrow__note">查詢撰寫與資料關聯。</p>
+        </article>
+
+        <article class="skillrow" data-skill-item data-category="design">
+          <h3 class="skillrow__name">設計工具</h3>
+          <div class="skillbar">
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:60%"></span></div>
+          </div>
+          <p class="skillrow__note">版面構思與視覺細節處理。</p>
+        </article>
+
+      </section>
+
+      <!-- 連回作品集，強化 R2 -->
+      <section class="panel">
+        <h2 class="panel__title">技能應用</h2>
+        <p>這些技能實際運用在哪些作品上，請見
+          <a href="portfolio.html">作品集</a>。</p>
       </section>
 
     </div>
