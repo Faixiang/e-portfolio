@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>個人資訊 — 彭靖男 PENG Jing Nan</title>
-  <meta name="description" content="彭靖男的基本資料、語言能力與興趣。">
+  <meta name="description" content="彭靖男的個人基本資料、語言能力、興趣與個人簡介。">
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -31,22 +31,25 @@
   <main>
     <section class="page-header">
       <h1 class="page-header__title">個人資訊</h1>
-      <p class="page-header__lead">關於我的基本資料、語言能力與興趣。</p>
+      <p class="page-header__lead">
+        <!-- TODO: 換成你的一句話自我介紹 -->
+        這一頁介紹你的基本資料、語言能力與興趣。
+      </p>
     </section>
 
     <div class="page">
 
-      <!-- 個人照片 -->
-      <figure class="portrait">
-        <div class="portrait__ph" aria-label="個人照片佔位">
-          <!-- TODO: 換成你的個人照片 <img> -->
-          個人照片
-        </div>
-        <figcaption class="portrait__cap">
-          <!-- TODO: 照片說明 -->
-          彭靖男 PENG Jing Nan
-        </figcaption>
-      </figure>
+      <!-- 個人照片：圖片放在此處，之後可自行替換 -->
+      <section class="panel">
+        <h2 class="panel__title">個人照片</h2>
+        <figure class="portrait">
+          <!-- TODO: 之後可改成 <img src="assets/images/photo.jpg" alt="彭靖男的個人照片"> -->
+          <div class="portrait__ph" role="img" aria-label="彭靖男的個人照片佔位區">
+            <span>照片位置</span>
+          </div>
+          <figcaption class="portrait__cap">彭靖男 · PENG Jing Nan</figcaption>
+        </figure>
+      </section>
 
       <!-- 基本資料 -->
       <section class="panel">
@@ -54,21 +57,25 @@
         <dl class="deflist">
           <div class="deflist__row">
             <dt class="deflist__term">姓名</dt>
-            <dd class="deflist__desc">彭靖男 PENG Jing Nan</dd>
+            <dd class="deflist__desc">彭靖男（PENG Jing Nan）</dd>
           </div>
           <div class="deflist__row">
-            <dt class="deflist__term">主修</dt>
-            <dd class="deflist__desc">
-              <!-- TODO: 學校與主修 -->
-              AI & ICT
-            </dd>
+            <dt class="deflist__term">電郵</dt>
+            <!-- TODO: 換成你的聯絡信箱，或整行刪除 -->
+            <dd class="deflist__desc">example@email.com</dd>
           </div>
           <div class="deflist__row">
-            <dt class="deflist__term">興趣</dt>
-            <dd class="deflist__desc">
-              <!-- TODO: 依你的實際興趣增刪 -->
-              科技、攝影、遊戲
-            </dd>
+            <dt class="deflist__term">電話</dt>
+            <dd class="deflist__desc">0000 0000</dd>
+          </div>
+          <div class="deflist__row">
+            <dt class="deflist__term">所在地</dt>
+            <dd class="deflist__desc">香港</dd>
+          </div>
+          <div class="deflist__row">
+            <dt class="deflist__term">專業方向</dt>
+            <!-- TODO: 換成你的主修或想從事的領域 -->
+            <dd class="deflist__desc">Artificial Intelligence &amp; ICT</dd>
           </div>
         </dl>
       </section>
@@ -76,10 +83,31 @@
       <!-- 語言能力 -->
       <section class="panel">
         <h2 class="panel__title">語言能力</h2>
+        <div class="skillbars">
+          <div class="skillbar">
+            <p class="skillbar__label">繁體中文（母語）</p>
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:100%"></span></div>
+          </div>
+          <div class="skillbar">
+            <p class="skillbar__label">英語（工作語言）</p>
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:75%"></span></div>
+          </div>
+          <!-- TODO: 依你的實際情況調整百分比，或增減項目 -->
+          <div class="skillbar">
+            <p class="skillbar__label">粵語</p>
+            <div class="skillbar__track"><span class="skillbar__fill" style="width:90%"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 興趣 -->
+      <section class="panel">
+        <h2 class="panel__title">興趣</h2>
         <ul class="taglist">
-          <li class="tag"><!-- TODO: 語言與程度，例如 粵語（母語） --></li>
-          <li class="tag"><!-- TODO: 語言與程度 --></li>
-          <li class="tag"><!-- TODO: 語言與程度 --></li>
+          <!-- TODO: 換成你的興趣 -->
+          <li class="tag">閱讀</li>
+          <li class="tag">科技</li>
+          <li class="tag">攝影</li>
         </ul>
       </section>
 
