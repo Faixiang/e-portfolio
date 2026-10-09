@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作品集 — 彭靖男 PENG Jing Nan</title>
+  <meta name="description" content="彭靖男的作品集，含專案縮圖、說明與燈箱檢視。">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <header>
+    <nav class="nav" aria-label="主導覽">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__brand">PENG Jing Nan</a>
+        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
+        <ul class="nav__list" id="nav-list">
+          <li><a href="index.html" class="nav__link">Home</a></li>
+          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
+          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
+          <li><a href="education.html" class="nav__link">教育背景</a></li>
+          <li><a href="skills.html" class="nav__link">專精技能</a></li>
+          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
+          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <h1 class="page-header__title">作品集</h1>
+      <p class="page-header__lead">點擊作品縮圖可放大檢視。</p>
+    </section>
+
+    <div class="page">
+      <section class="panel">
+        <h2 class="panel__title">專案</h2>
+        <div class="work-grid">
+
+          <figure class="work">
+            <a class="work__trigger" href="#" data-lightbox data-img="" data-caption="">
+              <div class="work__ph">
+                <span class="work__phlabel"><!-- TODO: 縮圖或標題 --></span>
+              </div>
+              <figcaption class="work__cap">
+                <strong><!-- TODO: 專案名稱 --></strong>
+                <span><!-- TODO: 簡短說明 --></span>
+              </figcaption>
+            </a>
+          </figure>
+
+          <figure class="work">
+            <a class="work__trigger" href="#" data-lightbox data-img="" data-caption="">
+              <div class="work__ph">
+                <span class="work__phlabel"><!-- TODO: 縮圖或標題 --></span>
+              </div>
+              <figcaption class="work__cap">
+                <strong><!-- TODO: 專案名稱 --></strong>
+                <span><!-- TODO: 簡短說明 --></span>
+              </figcaption>
+            </a>
+          </figure>
+
+          <figure class="work">
+            <a class="work__trigger" href="#" data-lightbox data-img="" data-caption="">
+              <div class="work__ph">
+                <span class="work__phlabel"><!-- TODO: 縮圖或標題 --></span>
+              </div>
+              <figcaption class="work__cap">
+                <strong><!-- TODO: 專案名稱 --></strong>
+                <span><!-- TODO: 簡短說明 --></span>
+              </figcaption>
+            </a>
+          </figure>
+
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 燈箱 -->
+  <div class="lightbox" hidden>
+    <div class="lightbox__panel">
+      <button type="button" class="lightbox__close" aria-label="關閉">✕</button>
+      <img class="lightbox__img" src="" alt="">
+      <p class="lightbox__caption"></p>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
