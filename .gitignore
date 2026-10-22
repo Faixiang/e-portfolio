@@ -1,4 +1,12 @@
-﻿
+﻿# ===== Agent 工作區（不進提交根目錄，避免污染 R9 的 zip）=====
 .workbuddy/
-
 .workbuddy-ai/
+
+# ===== 課程材料（不屬網站交付內容）=====
+Assignment marking rubric.docx
+
+# ===== 系統暫存檔 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp

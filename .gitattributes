@@ -1,0 +1,11 @@
+# 行尾與編碼：交由 git 統一判斷，避免不同工具（編輯器／REST API）造成換行差異
+* text=auto
+
+# 二進位檔：禁止任何轉換，否則會損壞
+*.woff2 binary
+*.woff   binary
+*.jpg   binary
+*.jpeg  binary
+*.png   binary
+*.ico   binary
+*.gif   binary
