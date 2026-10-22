@@ -35,17 +35,9 @@
     <!-- 首頁主視覺 -->
     <section class="hero">
 
-      <!-- 故障字效 + 打字機：data-text 供 CSS 疊層讀取，
-           data-typewriter 供 JS 讀取原文後清空並逐字填入 -->
-      <!-- 三層切片 glitch：底層白綠原文字 + 亮綠切片 + 暗綠切片
-           每層由JS 拆成逐字 span，並以相同的 --i 索引讓浮動完全對齊。
-           文字保留在元素內，JS 未執行時仍可正常閱讀。
-           「|」作為**行分隔符**（文字中不會出現此字元），JS 會轉成 <br>
-           讓三層一致斷行。注意：不可用 \n —— HTML 屬性不處理跳脫序列，
-           會被當成反斜線加字母 n 兩個字元。 -->
-      <h1 class="hero__title"
-          data-split="Myself|E-Portfolio"
-          aria-label="Myself E-Portfolio">Myself<br>E-Portfolio</h1>
+      <!-- 首頁主標：單層文字，柔和淡入由 CSS 負責；
+           不使用任何故障字效、切片疊層或逐字拆分。 -->
+      <h1 class="hero__title">Myself<br>E-Portfolio</h1>
 
       <p class="hero__subtitle">PENG Jing Nan</p>
       <p class="hero__desc">
@@ -143,7 +135,7 @@
         <article class="band-item">
           <h3 class="band-item__title">JavaScript</h3>
           <p class="band-item__desc">
-            技能篩選、作品燈箱、導覽高亮、3D 輪盤與Canvas 背景動畫，
+            技能篩選、作品燈箱、導覽高亮、3D 輪盤與卡片點擊回饋，
             全部程式碼置於單一外部檔案。
           </p>
         </article>
@@ -167,8 +159,8 @@
         <article class="band-item">
           <h3 class="band-item__title">效能</h3>
           <p class="band-item__desc">
-            Canvas 動畫限幀 30fps 並於分頁隱藏時暫停；
-            動畫元素於結束後自 DOM 移除，不累積記憶體。
+            輪盤動畫以 requestAnimationFrame 驅動，分頁隱藏時即停止計算；
+            僅以 CSS 過渡處理回饋動效，不建立常駐特效節點。
           </p>
         </article>
 

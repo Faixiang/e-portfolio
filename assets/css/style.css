@@ -1,86 +1,48 @@
-/* ============================================================
-   e-Portfolio — 彭靖男 PENG Jing Nan
-   CIS222 Individual Assignment · 全站共用樣式表
-   ------------------------------------------------------------
-   結構：
-   1. 設計變數（配色、字體、間距、斷點）
-   2. 重設與基礎
-   3. 導覽列（含 hamburger）
-   4. 首頁主視覺（含故障字效）
-   5. 卡片網格（含點擊閃光）
-   6. 內容頁共用區塊
-   7. 其他元件
-   8. 特效層（Canvas 背景、光暈、粒子）
-   9. 頁尾
-   10. 響應式（R6）
-   ============================================================ */
 
-
-/* ===== 1. 設計變數 ===== */
-/* ============================================================
-   自嵌字體：Press Start 2P（像素字體，零外部依賴）
-   ------------------------------------------------------------
-   來源：Google Fonts 的 latin 子集，經 fontTools 裁剪至僅含
-        「PENG Jing Nan」所需的 9 個字元（EGJN Pain + 空格）。
-        12,512 → 2,624 bytes。字體檔放在同目錄的 ../fonts/，
-        隨網站一起打包，不需連線即可顯示。
-   ============================================================ */
-@font-face {
-  font-family: 'PressStartPixel';
-  /* 只提供 woff2；不支援的舊瀏覽器會自動跳過此 @font-face，
-     副標會退回 Courier New monospace，不影響版面。 */
-  src: url('../fonts/pressstart-full.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  /* 只用於副標，載入失敗時不應阻塞頁面 */
-  font-display: swap;
-}
 
 
 :root {
-  /* --- 配色：純黑 + 螢光綠（Matrix 風格）---
-     來源：marvis_matrix.html 的配色方案。
-     四階綠（由亮到暗）：
-       --primary      #0f0   主色・螢光綠
-       --accent       #4efd4e 高亮綠（強調、hover）
-       --text         #9f9   內文綠
-       --text-muted   #4a4   次要文字（頁尾、裝飾）
-     ⚠️ 教材 R9 要求「淺色背景 + good contrast」，本組為深色。
-        三階綠對黑底的對比：#0f0 ≈ 18.4:1、#9f9 ≈ 10.4:1、#4a4 ≈ 2.9:1
-        —— #4a4 僅用於頁尾與裝飾字，不承載重要內容。
-        若需切回淺底版本，僅改動本區塊即可。 */
-  --primary: #0f0;           /* 主色・螢光綠 */
-  --accent: #4efd4e;         /* 高亮綠：hover 與強調 */
-  --accent-dim: #00a000;     /* 暗綠：進度條底、邊框 */
-  --text: #9f9;              /* 內文：亮綠（對黑底 10.4:1） */
-  --text-dim: #4a4;          /* 次要文字・頁尾 */
-  --text-faint: #373;        /* 裝飾字・極低調 */
-  --bg: #000000;             /* 純黑背景 */
-  --surface: #050805;         /* 卡片表面：近黑 */
-  --surface-2: rgba(0, 255, 0, 0.06);  /* 半透明綠底 */
-  --border: rgba(0, 255, 0, 0.3);      /* 綠色邊框 */
-  --border-strong: rgba(0, 255, 0, 0.5);
-  --danger: #ff0033;         /* 故障字效的紅 */
-  --glow: #0f0;              /* 光暈 / 粒子 */
+  /* --- 配色：現代暗色玻璃擬態（Dark Glassmorphism）---
+     近黑底 #0b0d12 + 青紫漸層強調色 + 半透明毛玻璃表面。
+     色彩全部集中本區塊，換主題只需改這裡。 */
+  --primary: #22d3ee;
+  --accent: #a855f7;
+  --accent-dim: #6d28d9;
+  --grad-accent: linear-gradient(135deg, #22d3ee 0%, #a855f7 100%);
+  --text: #e6e9f2;
+  --text-dim: #9aa3b8;
+  --text-faint: #6b7385;
+  --bg: #0b0d12;
+  --surface: rgba(255, 255, 255, 0.055);
+  --surface-2: rgba(255, 255, 255, 0.09);
+  --border: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --danger: #ff5c7a;
+  --glow: #22d3ee;
 
-  /* --- 字體 --- */
-  --font-base: 'Segoe UI', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
-  --font-mono: 'Consolas', 'Courier New', monospace;
-  /* 副標題字級基準：主標題以 calc(var(--subtitle-size) * N) 綁定比例 */
+  /* --- 毛玻璃參數 --- */
+  --glass-bg: rgba(20, 24, 36, 0.55);
+  --glass-bg-strong: rgba(20, 24, 36, 0.78);
+  --glass-blur: blur(16px) saturate(150%);
+  --glass-shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.75);
+  --glass-glow: 0 0 24px rgba(34, 211, 238, 0.18);
+
+  /* --- 字體：現代無襯線字體堆疊 --- */
+  --font-base: 'Inter', 'Noto Sans TC', 'Source Han Sans TC', 'Microsoft JhengHei', sans-serif;
+  --font-mono: 'Inter', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
   --subtitle-size: clamp(0.75rem, 1.6vw, 1.15rem);
 
-  /* --- 間距 --- */
+  /* --- 間距 / 圓角 --- */
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
   --spacing-xl: 3.5rem;
-  --radius: 10px;
+  --radius: 14px;
 
   /* --- 斷點（R6）--- */
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
 
-  /* 內容最大寬度 —— 不用固定 px 寬度，讓版面自然收放 */
   --content-max: 60rem;
 }
 
@@ -100,6 +62,10 @@ body {
   font-family: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", sans-serif;
   color: var(--text);
   background-color: var(--bg);
+  background-image:
+    radial-gradient(60rem 30rem at 15% -10%, rgba(34, 211, 238, 0.10), transparent 60%),
+    radial-gradient(45rem 25rem at 90% 0%, rgba(168, 85, 247, 0.12), transparent 60%);
+  background-attachment: fixed;
 }
 
 h1, h2, h3, h4 {
@@ -126,10 +92,14 @@ img {
 
 /* ===== 3. 導覽列 ===== */
 .nav {
-  background-color: var(--surface);
+  background: var(--glass-bg);
   border-bottom: 1px solid var(--border);
   position: relative;
   z-index: 10;            /* 高於光暈(z-index:0)，確保可讀 */
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--border);
 }
 
 .nav__inner {
@@ -201,6 +171,7 @@ img {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   margin-bottom: var(--spacing-sm);
+  animation: soft-fade-in 0.8s ease-out both;
 }
 
 
@@ -210,60 +181,68 @@ img {
   0%, 100% {
     opacity: 1;
     text-shadow:
-      0 0 4px rgba(0, 255, 0, 0.9),
-      0 0 10px rgba(0, 255, 0, 0.7),
-      0 0 26px rgba(0, 255, 0, 0.5),
+      0 0 4px rgba(34, 211, 238, 0.9),
+      0 0 10px rgba(34, 211, 238, 0.7),
+      0 0 26px rgba(34, 211, 238, 0.5),
       0 4px 12px rgba(0, 0, 0, 0.9);
   }
   50% {
     opacity: 0.78;
     text-shadow:
-      0 0 3px rgba(0, 255, 0, 0.55),
-      0 0 7px rgba(0, 255, 0, 0.4),
-      0 0 16px rgba(0, 255, 0, 0.28),
+      0 0 3px rgba(34, 211, 238, 0.55),
+      0 0 7px rgba(34, 211, 238, 0.4),
+      0 0 16px rgba(34, 211, 238, 0.28),
       0 4px 12px rgba(0, 0, 0, 0.9);
   }
 }
 
 .hero__subtitle {
   /* 真正的像素點陣字體，非等寬粗體模擬 */
-  font-family: 'PressStartPixel', 'Courier New', monospace;
+  font-family: 'Inter', 'Noto Sans TC', 'Source Han Sans TC', 'Microsoft JhengHei', sans-serif;
   font-size: var(--subtitle-size);
   font-weight: 400;
-  letter-spacing: 0;
+  letter-spacing: 0.08em;
 
-  /* 貼合主題的螢光綠 */
+  /* 貼合主題的青紫漸層 */
   color: var(--primary);
 
   /* 黑邊立體投影：兩個偏移疊出下方厚度，
-     再加一層螢光外暈造 CRT 輝光。 */
-  text-shadow:
-    2px 2px 0 #000,          /* 近距離黑邊：造立體厚度 */
-    4px 4px 0 rgba(0, 0, 0, 0.85),
-    0 0 10px rgba(0, 255, 0, 0.5);   /* 螢光外暈 */
+     再加一層螢光外暈造 玻璃擬態 輝光。 */
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.35);   /* 螢光外暈 */
 
   margin-bottom: var(--spacing-lg);
+  font-weight: 500;
+  animation: soft-fade-in 0.9s ease-out 0.12s both;
 }
 
 .hero__desc {
   max-width: 34rem;
   margin: 0 auto var(--spacing-lg);
   color: var(--text-dim);
+  animation: soft-fade-in 1s ease-out 0.2s both;
 }
 
 .btn {
   display: inline-block;
   padding: 0.7rem 1.6rem;
-  background-color: var(--primary);
-  color: #000;
+  background: var(--grad-accent);
+  color: #06121a;
   text-decoration: none;
   border-radius: var(--radius);
   transition: background-color 0.2s, transform 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  box-shadow: 0 10px 26px -16px rgba(34, 211, 238, 0.65);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
 }
 
 .btn:hover {
-  background-color: var(--accent);
+  background: var(--grad-accent);
   transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px -16px rgba(168, 85, 247, 0.6);
+  filter: brightness(1.08);
 }
 
 
@@ -287,8 +266,8 @@ img {
 .section-title {
   font-size: 1.6rem;
   margin-bottom: var(--spacing-sm);
-  /* Matrix 螢光暈 */
-  text-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+  /* Glass 螢光暈 */
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
 }
 
 .section-lead {
@@ -303,7 +282,7 @@ img {
 .page-header__title {
   font-size: 1.9rem;
   margin-bottom: var(--spacing-sm);
-  text-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
 }
 
 .page-header__lead {
@@ -312,17 +291,20 @@ img {
 }
 
 .panel {
-  background-color: var(--surface);
+  background: var(--glass-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
 }
 
 .panel__title {
   font-size: 1.25rem;
   margin-bottom: var(--spacing-md);
-  text-shadow: 0 0 6px rgba(0, 255, 0, 0.35);
+  text-shadow: 0 0 6px rgba(34, 211, 238, 0.35);
 }
 
 /* 定義列表：適合「術語 — 說明」這種成對資料 */
@@ -407,12 +389,12 @@ img {
 
 .portrait__ph {
   aspect-ratio: 3 / 4;
-  background: linear-gradient(135deg, #0d1a0d, #001100);
+  background: linear-gradient(135deg, #0d1224, #160f2c);
   border-radius: var(--radius);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #0f0;
+  color: #22d3ee;
   font-size: 0.9rem;
 }
 
@@ -464,6 +446,10 @@ img {
   padding: 0.35rem 0.85rem;
   border-radius: 999px;
   font-size: 0.9rem;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--border);
 }
 
 /* 篩選按鈕列 —— 互動 ① 的視覺 */
@@ -478,11 +464,14 @@ img {
   font-size: 0.92rem;
   padding: 0.45rem 1rem;
   border: 1px solid var(--border);
-  background-color: var(--surface);
+  background: var(--glass-bg);
   color: var(--text-dim);
   border-radius: 999px;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
 }
 
 .filterbar__btn:hover {
@@ -493,7 +482,7 @@ img {
 .filterbar__btn.is-selected {
   background-color: var(--primary);
   border-color: var(--primary);
-  color: #000;
+  color: #0b0d12;
 }
 
 /* 技能列 */
@@ -509,7 +498,7 @@ img {
 .skillrow__name {
   font-size: 1.02rem;
   margin-bottom: 0.5rem;
-  text-shadow: 0 0 6px rgba(0, 255, 0, 0.35);
+  text-shadow: 0 0 6px rgba(34, 211, 238, 0.35);
 }
 
 .skillrow__note {
@@ -555,6 +544,11 @@ img {
 
 .work {
   margin: 0;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--border);
 }
 
 .work__trigger {
@@ -567,7 +561,7 @@ img {
   align-items: center;
   justify-content: center;
   aspect-ratio: 4 / 3;
-  background: linear-gradient(135deg, #0a140a, #001000);
+  background: linear-gradient(135deg, #0d1224, #160f2c);
   border-radius: var(--radius);
   transition: transform 0.2s;
 }
@@ -577,7 +571,7 @@ img {
 }
 
 .work__phlabel {
-  color: #0f0;
+  color: #22d3ee;
   font-size: 0.9rem;
 }
 
@@ -610,17 +604,21 @@ img {
 
 .lightbox__panel {
   position: relative;
-  background-color: var(--surface);
+  background: var(--glass-bg);
   border-radius: var(--radius);
   padding: var(--spacing-md);
   max-width: 44rem;
   width: 100%;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--border);
 }
 
 .lightbox__img {
   width: 100%;
   border-radius: calc(var(--radius) - 2px);
-  background: linear-gradient(135deg, #0a140a, #001000);
+  background: linear-gradient(135deg, #0d1224, #160f2c);
   min-height: 12rem;
 }
 
@@ -638,9 +636,12 @@ img {
   font-size: 0.88rem;
   padding: 0.35rem 0.85rem;
   border: 1px solid var(--border);
-  background-color: var(--surface);
+  background: var(--glass-bg);
   border-radius: var(--radius);
   cursor: pointer;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
 }
 
 .lightbox__close:hover {
@@ -662,6 +663,11 @@ img {
   gap: var(--spacing-sm) var(--spacing-lg);
   padding: var(--spacing-sm) 0;
   border-bottom: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--border);
 }
 
 .cert:last-child {
@@ -723,11 +729,14 @@ img {
   font-size: 1.5rem;
   line-height: 1;
   padding: 0.35rem 0.6rem;
-  background-color: var(--surface);
+  background: var(--glass-bg);
   color: var(--primary);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: pointer;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
 }
 
 .nav__toggle:hover {
@@ -737,7 +746,7 @@ img {
 
 /* ===== 8. 特效層 ===== */
 
-/* Canvas 代碼雨：置於頁面底層，不攔截任何點擊 */
+/* Canvas 背景光暈：置於頁面底層，不攔截任何點擊 */
 .canvas-bg {
   position: fixed;
   inset: 0;
@@ -749,7 +758,7 @@ img {
 
 /* 鼠標跟隨光暈
    比照 marvis_matrix.html 的 mix-blend-mode: screen 疊加手法，
-   在淺底上以螢光綠 additive 混合，營造 CRT 光暈感。 */
+   在淺底上以青紫漸層 additive 混合，營造 玻璃擬態 光暈感。 */
 .cursor-glow {
   position: fixed;
   top: 0;
@@ -758,7 +767,7 @@ img {
   height: 300px;
   border-radius: 50%;
   background: radial-gradient(circle,
-              rgba(0, 255, 0, 0.25) 0%,
+              rgba(34, 211, 238, 0.25) 0%,
               transparent 60%);
   mix-blend-mode: screen;
   pointer-events: none;
@@ -796,12 +805,12 @@ img {
 
 @keyframes card-flash {
   0% {
-    border-color: #fff;
-    box-shadow: 0 0 24px rgba(0, 255, 0, 0.9);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
   }
   100% {
     border-color: var(--border);
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0);
   }
 }
 
@@ -831,35 +840,35 @@ img {
      理想值必須用 vw（視窗單位）或 cqw（容器查詢單位）。 */
   font-size: calc(var(--subtitle-size) * 4.5);
   margin-bottom: 0.25rem;
-  font-family: 'PressStartPixel', 'Courier New', monospace;
+  font-family: 'Inter', 'Noto Sans TC', 'Source Han Sans TC', 'Microsoft JhengHei', sans-serif;
 
   /* 全大寫。CSS 與 JS 雙邊都做：
      CSS 處理未執行 JS 的情況，JS 在拆層前 .toUpperCase()。
      兩者缺一，三層 span 都會顯示原始大小寫。 */
   text-transform: uppercase;
 
-  /* ===== 像素化處理（零外部依賴）=====
+  /* ===== 漸層文字處理（零外部依賴）=====
      系統無真正的點陣字體，故用 CSS 近似：
      ① -webkit-font-smoothing: none — 關掉字體抗鋸齒，
         讓邊緣變成硬階梯，是像素感最主要的來源。
      ② font-weight: 700 — 加重筆畫，粗體邊緣更接近點陣塊。
      ③ letter-spacing — 略增字距讓每格分離，像字元格。
      ④ 疊加 text-shadow 形成 1px 硬邊光暈（見下方）。 */
-  -webkit-font-smoothing: none;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: geometricPrecision;
+  text-rendering: optimizeLegibility;
 
   /* 大寫字母較寬，略增字距讓字距更均勻 */
   letter-spacing: 0.05em;
   font-weight: 700;
   color: var(--text);
 
-  /* 多層字體陰影：近距離硬陰影造立體感 + 遠距離螢光暈造 CRT 輝光。
+  /* 多層字體陰影：近距離硬陰影造立體感 + 遠距離螢光暈造 玻璃擬態 輝光。
      四層依序：近硬 → 稍遠 → 中暈 → 大範圍環境光。 */
   text-shadow:
-    0 0 4px rgba(0, 255, 0, 0.9),
-    0 0 10px rgba(0, 255, 0, 0.7),
-    0 0 26px rgba(0, 255, 0, 0.5),
+    0 0 4px rgba(34, 211, 238, 0.9),
+    0 0 10px rgba(34, 211, 238, 0.7),
+    0 0 26px rgba(34, 211, 238, 0.5),
     0 4px 12px rgba(0, 0, 0, 0.9);
 
   /* 父層只做呼吸（動 opacity 與 text-shadow），
@@ -896,14 +905,14 @@ img {
 .gl-layer--lime {
   color: var(--accent);
   clip-path: inset(20% 0 55% 0);
-  animation: glitch-slice-lime 2.4s infinite linear alternate-reverse;
+  animation: slice-fade-lime 2.4s infinite linear alternate-reverse;
 }
 
 /* 暗綠層：切下段 */
 .gl-layer--dim {
   color: var(--accent-dim);
   clip-path: inset(60% 0 10% 0);
-  animation: glitch-slice-dim 1.8s infinite linear alternate-reverse;
+  animation: slice-fade-dim 1.8s infinite linear alternate-reverse;
 }
 
 /* ===== 逐字波浪 =====
@@ -918,25 +927,16 @@ img {
 }
 
 @keyframes char-wave {
-  0%, 100% { transform: translateY(-15px); }
-  50%      { transform: translateY(15px); }
+  0%, 100% { transform: translateY(0); opacity: 0.92; }
+  50%      { transform: translateY(-2px); opacity: 1; }
 }
 
-@keyframes glitch-slice-lime {
-  0%   { clip-path: inset(10% 0 60% 0); }
-  20%  { clip-path: inset(80% 0  5% 0); }
-  40%  { clip-path: inset(30% 0 40% 0); }
-  60%  { clip-path: inset(50% 0 30% 0); }
-  80%  { clip-path: inset(70% 0 15% 0); }
-  100% { clip-path: inset(20% 0 65% 0); }
+@keyframes slice-fade-lime {
+  0%, 100% { opacity: 0; }
 }
 
-@keyframes glitch-slice-dim {
-  0%   { clip-path: inset(70% 0 10% 0); }
-  25%  { clip-path: inset(15% 0 70% 0); }
-  50%  { clip-path: inset(45% 0 40% 0); }
-  75%  { clip-path: inset(85% 0  5% 0); }
-  100% { clip-path: inset(30% 0 55% 0); }
+@keyframes slice-fade-dim {
+  0%, 100% { opacity: 0; }
 }
 
 
@@ -948,7 +948,7 @@ img {
    但這導致使用者即使已開啟動畫設定、JS 也正常建立元素，
    畫面上仍完全看不到特效（元素被 display:none 蓋掉）。
 
-   本網站的Canvas 代碼雨是視覺主題核心，不屬於裝飾性動畫，
+   本網站的Canvas 背景光暈是視覺主題核心，不屬於裝飾性動畫，
    因此不再依此設定關閉。僅保留過渡動畫的簡化，
    讓操作回饋在低動態環境下仍即時可見。 */
 @media (prefers-reduced-motion: reduce) {
@@ -1000,11 +1000,11 @@ img {
   margin-top: -8.75rem;                /* 用負 margin 做垂直置中 */
   border-radius: 2rem;
 
-  /* 半透明 + 模糊：讓後方代碼雨透出疊在卡片上 */
-  background: rgba(0, 40, 10, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(0, 255, 0, 0.35);
+  /* 半透明 + 模糊：讓後方背景光暈透出疊在卡片上 */
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border);
 
   box-shadow: 0 1.5rem 3rem -0.75rem rgba(0, 0, 0, 0.9);
   display: flex;
@@ -1035,8 +1035,8 @@ img {
 .carousel__card:hover,
 .carousel__card:focus-visible {
   border-color: var(--accent);
-  background: rgba(0, 60, 15, 0.75);
-  box-shadow: 0 0 1.5rem rgba(0, 255, 0, 0.45);
+  background: rgba(30, 26, 56, 0.75);
+  box-shadow: 0 0 1.5rem rgba(34, 211, 238, 0.45);
   outline: none;
 }
 
@@ -1045,13 +1045,13 @@ img {
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  border: 1px solid rgba(0, 255, 0, 0.5);
+  border: 1px solid rgba(34, 211, 238, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   color: var(--primary);
-  background: rgba(0, 255, 0, 0.08);
+  background: rgba(34, 211, 238, 0.08);
   font-family: var(--font-mono);
   flex-shrink: 0;
 }
@@ -1060,7 +1060,7 @@ img {
   font-size: 1.05rem;
   font-weight: 500;
   color: var(--primary);
-  text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+  text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
 }
 
 .carousel__desc {
@@ -1109,7 +1109,7 @@ img {
 
 /* 卡片在正前方時標題加強螢光，讓焦點明確 */
 .carousel__card.is-front .carousel__title {
-  text-shadow: 0 0 14px rgba(0, 255, 0, 0.9);
+  text-shadow: 0 0 14px rgba(34, 211, 238, 0.9);
 }
 
 
@@ -1127,7 +1127,7 @@ img {
 
 .band-item {
   border: 1px solid var(--border);
-  background: rgba(0, 255, 0, 0.03);
+  background: rgba(34, 211, 238, 0.03);
   border-radius: var(--radius);
   padding: var(--spacing-md);
 }
@@ -1136,7 +1136,7 @@ img {
   font-size: 0.95rem;
   color: var(--primary);
   margin-bottom: 0.35rem;
-  text-shadow: 0 0 6px rgba(0, 255, 0, 0.35);
+  text-shadow: 0 0 6px rgba(34, 211, 238, 0.35);
 }
 
 .band-item__desc {
@@ -1161,7 +1161,7 @@ img {
   padding: var(--spacing-lg) var(--spacing-md);
   color: var(--text-dim);
   font-size: 0.88rem;
-  letter-spacing: 0.2em;          /* terminal 質感 */
+  letter-spacing: 0.08em;          /* terminal 質感 */
   font-family: var(--font-mono);
   text-align: center;
 }
@@ -1281,4 +1281,31 @@ img {
 /* --- 1024px 以上：放寬留白 --- */
 @media (min-width: 1024px) {
   .hero { padding: 5rem var(--spacing-md); }
+}
+
+/* ===== 11. 現代玻璃擬態：柔和動效 ===== */
+@keyframes soft-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__eyebrow,
+  .hero__subtitle,
+  .hero__desc,
+  .hero__title,
+  .gl-char {
+    animation: none;
+  }
 }
