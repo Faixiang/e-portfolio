@@ -1,14 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: c6eb62ba6ec5a28db2139adf23a2fe4b_f4155dddc6c911f19063525400393706
-    ReservedCode1: yyt9TX4olAc3nktQG8nVY/1Yp7zmcKRNn94HNz01Hjs7PbkblyZU28arPRhQg8Kn7nQcTZOVfuoExhhhnhFWp6/TMVDDxlfGIRCH33PnJrgnQ8YOPbUd4oDUC5qJlHK8fg/F1kNFSPSrNzW0926EY9e7iY7yYEcJbsD7XpkwGcINGQKACrbTC/udqz4=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: c6eb62ba6ec5a28db2139adf23a2fe4b_f4155dddc6c911f19063525400393706
-    ReservedCode2: yyt9TX4olAc3nktQG8nVY/1Yp7zmcKRNn94HNz01Hjs7PbkblyZU28arPRhQg8Kn7nQcTZOVfuoExhhhnhFWp6/TMVDDxlfGIRCH33PnJrgnQ8YOPbUd4oDUC5qJlHK8fg/F1kNFSPSrNzW0926EY9e7iY7yYEcJbsD7XpkwGcINGQKACrbTC/udqz4=
----
-
 # Myself E-Portfolio
 
 CIS222 Web Design and Development — Individual Assignment
