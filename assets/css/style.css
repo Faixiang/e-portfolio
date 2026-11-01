@@ -1,5 +1,21 @@
 
+/* ============================================================
+   e-Portfolio — 彭靖男 PENG Jing Nan
+   CIS222 Individual Assignment · 舊設計系統（暗色玻璃擬態）
+   ------------------------------------------------------------
+   2026-10-23 死碼清理（Q1）
+     移除：首頁專屬樣式（.hero / .btn / .section-title / .section-lead /
+            .section-band / .band-* / .carousel-* / .gl-layer / .gl-char）、
+            已不存在的特效層（.canvas-bg / .cursor-glow / .particle）、
+            對應 @keyframes（title-breathe / char-wave / slice-fade-* /
+            particle-fade / soft-fade-in / soft-float）、
+            零引用變數、與重複宣告。
 
+     保留：六頁仍在用的全部樣式（.nav / .page / .panel / .deflist /
+            .timeline / .portrait / .skillbar / .tag / .filterbar /
+            .skillrow / .table / .work / .lightbox / .cert / .sitemap /
+            .footer / .btn 已無引用故移除 / .card-flash 動畫）。
+     ============================================================ */
 
 :root {
   /* --- 配色：現代暗色玻璃擬態（Dark Glassmorphism）---
@@ -7,30 +23,20 @@
      色彩全部集中本區塊，換主題只需改這裡。 */
   --primary: #22d3ee;
   --accent: #a855f7;
-  --accent-dim: #6d28d9;
-  --grad-accent: linear-gradient(135deg, #22d3ee 0%, #a855f7 100%);
   --text: #e6e9f2;
   --text-dim: #9aa3b8;
-  --text-faint: #6b7385;
   --bg: #0b0d12;
-  --surface: rgba(255, 255, 255, 0.055);
   --surface-2: rgba(255, 255, 255, 0.09);
   --border: rgba(255, 255, 255, 0.10);
   --border-strong: rgba(255, 255, 255, 0.22);
-  --danger: #ff5c7a;
-  --glow: #22d3ee;
 
   /* --- 毛玻璃參數 --- */
   --glass-bg: rgba(20, 24, 36, 0.55);
-  --glass-bg-strong: rgba(20, 24, 36, 0.78);
   --glass-blur: blur(16px) saturate(150%);
   --glass-shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.75);
-  --glass-glow: 0 0 24px rgba(34, 211, 238, 0.18);
 
   /* --- 字體：現代無襯線字體堆疊 --- */
-  --font-base: 'Inter', 'Noto Sans TC', 'Source Han Sans TC', 'Microsoft JhengHei', sans-serif;
   --font-mono: 'Inter', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
-  --subtitle-size: clamp(0.75rem, 1.6vw, 1.15rem);
 
   /* --- 間距 / 圓角 --- */
   --spacing-sm: 0.5rem;
@@ -93,7 +99,6 @@ img {
 /* ===== 3. 導覽列 ===== */
 .nav {
   background: var(--glass-bg);
-  border-bottom: 1px solid var(--border);
   position: relative;
   z-index: 10;            /* 高於光暈(z-index:0)，確保可讀 */
   backdrop-filter: var(--glass-blur);
@@ -116,7 +121,6 @@ img {
 .nav__brand {
   font-weight: 600;
   font-family: var(--font-mono);
-  letter-spacing: 0.06em;
   font-size: 1.05rem;
   text-decoration: none;
   color: var(--text);
@@ -152,100 +156,6 @@ img {
 }
 
 
-/* ===== 4. 首頁主視覺 ===== */
-.hero {
-  /* 主視覺不限於內容容器（--content-max 60rem），
-     因為遊戲標題式的超大標題需要盡量吃滿視窗寬度。
-     內文元素（.hero__desc 等）另以 max-width 收斂，避免行文過長。 */
-  width: 100%;
-  margin: 0 auto;
-  padding: var(--spacing-xl) var(--spacing-md);
-  text-align: center;
-  position: relative;
-  z-index: 1;          /* 高於光暈，確保文字清晰（R9 對比） */
-}
-
-.hero__eyebrow {
-  color: var(--text-dim);
-  font-size: 0.85rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin-bottom: var(--spacing-sm);
-  animation: soft-fade-in 0.8s ease-out both;
-}
-
-
-/* 呼吸動畫同步循環陰影強度 —— 否則動畫一開始
-   就會把 .hero__title 的多層陰影覆蓋掉。 */
-@keyframes title-breathe {
-  0%, 100% {
-    opacity: 1;
-    text-shadow:
-      0 0 4px rgba(34, 211, 238, 0.9),
-      0 0 10px rgba(34, 211, 238, 0.7),
-      0 0 26px rgba(34, 211, 238, 0.5),
-      0 4px 12px rgba(0, 0, 0, 0.9);
-  }
-  50% {
-    opacity: 0.78;
-    text-shadow:
-      0 0 3px rgba(34, 211, 238, 0.55),
-      0 0 7px rgba(34, 211, 238, 0.4),
-      0 0 16px rgba(34, 211, 238, 0.28),
-      0 4px 12px rgba(0, 0, 0, 0.9);
-  }
-}
-
-.hero__subtitle {
-  /* 真正的像素點陣字體，非等寬粗體模擬 */
-  font-family: 'Inter', 'Noto Sans TC', 'Source Han Sans TC', 'Microsoft JhengHei', sans-serif;
-  font-size: var(--subtitle-size);
-  font-weight: 400;
-  letter-spacing: 0.08em;
-
-  /* 貼合主題的青紫漸層 */
-  color: var(--primary);
-
-  /* 黑邊立體投影：兩個偏移疊出下方厚度，
-     再加一層螢光外暈造 玻璃擬態 輝光。 */
-  text-shadow: 0 0 20px rgba(34, 211, 238, 0.35);   /* 螢光外暈 */
-
-  margin-bottom: var(--spacing-lg);
-  font-weight: 500;
-  animation: soft-fade-in 0.9s ease-out 0.12s both;
-}
-
-.hero__desc {
-  max-width: 34rem;
-  margin: 0 auto var(--spacing-lg);
-  color: var(--text-dim);
-  animation: soft-fade-in 1s ease-out 0.2s both;
-}
-
-.btn {
-  display: inline-block;
-  padding: 0.7rem 1.6rem;
-  background: var(--grad-accent);
-  color: #06121a;
-  text-decoration: none;
-  border-radius: var(--radius);
-  transition: background-color 0.2s, transform 0.2s;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  box-shadow: 0 10px 26px -16px rgba(34, 211, 238, 0.65);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
-}
-
-.btn:hover {
-  background: var(--grad-accent);
-  transform: translateY(-1px);
-  transform: translateY(-2px);
-  box-shadow: 0 14px 32px -16px rgba(168, 85, 247, 0.6);
-  filter: brightness(1.08);
-}
-
-
 /* ===== 5. 卡片網格 ===== */
 .page {
   max-width: var(--content-max);
@@ -262,20 +172,6 @@ img {
   position: relative;
   z-index: 1;          /* 高於光暈 */
 }
-
-.section-title {
-  font-size: 1.6rem;
-  margin-bottom: var(--spacing-sm);
-  /* Glass 螢光暈 */
-  text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
-}
-
-.section-lead {
-  color: var(--text-dim);
-  margin-bottom: var(--spacing-lg);
-}
-
-/* 圖片佔位區（暫代圖片，之後可換成 <img>） */
 
 
 /* ===== 6. 內容頁共用區塊 ===== */
@@ -662,7 +558,6 @@ img {
   align-items: baseline;
   gap: var(--spacing-sm) var(--spacing-lg);
   padding: var(--spacing-sm) 0;
-  border-bottom: 1px solid var(--border);
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -746,56 +641,6 @@ img {
 
 /* ===== 8. 特效層 ===== */
 
-/* Canvas 背景光暈：置於頁面底層，不攔截任何點擊 */
-.canvas-bg {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;              /* 關鍵：確保在內容之下 */
-  pointer-events: none;     /* 不影響任何互動 */
-}
-
-/* 鼠標跟隨光暈
-   比照 marvis_matrix.html 的 mix-blend-mode: screen 疊加手法，
-   在淺底上以青紫漸層 additive 混合，營造 玻璃擬態 光暈感。 */
-.cursor-glow {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-              rgba(34, 211, 238, 0.25) 0%,
-              transparent 60%);
-  mix-blend-mode: screen;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-
-.cursor-glow.is-active {
-  opacity: 1;
-}
-
-/* 點擊粒子（JS 動態插入，動畫結束後自動移除） */
-.particle {
-  position: fixed;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 5;
-  animation: particle-fade 0.6s ease-out forwards;
-}
-
-@keyframes particle-fade {
-  from { opacity: 1; transform: scale(1); }
-  to   { opacity: 0; transform: scale(0.2); }
-}
-
 /* 卡片點擊閃光：JS 加 .is-flash 後觸發一次
    手法比照 marvis_matrix.html：邊框轉白＋ 外發光暈 */
 .skillrow.is-flash,
@@ -814,336 +659,21 @@ img {
   }
 }
 
-/* ===== 主標：三層切片 +逐字波浪浮動 =====
-   ------------------------------------------------------------
-   三層結構（不使用偽元素，改用 span）：
-     .gl-layer--base  白綠原文字，佔位維持版面
-     .gl-layer--lime  亮綠，切上段
-     .gl-layer--dim   暗綠，切下段
-   每層都由 JS 拆成逐字 .gl-char，並以相同的 --i 索引套用
-   相同 delay，因此三層的「波」完全對齊。
-
-   波浪原理：每個字依 --i 延後 animation-delay，
-   形成由左至右推進的正弦波，而非整體同步上下。
-   ========================================== */
-.hero__title {
-  position: relative;
-  display: inline-block;
-  /* 字級自適應視窗寬度（R6）
-     font-size: clamp(最小值, 理想值, 最大值)
-     · 最小 1.5rem — 手機窄屏仍清晰可讀
-     · 理想 9vw   — 隨視窗寬度等比放大
-     · 最大 15rem — 約 240px；兩行合計高度需留版面空間
-
-     注意：不可用「%」當理想值 —— font-size 的百分比是
-     相對「父元素字級」，不是容器寬度，會算出約 30px 的過小值。
-     理想值必須用 vw（視窗單位）或 cqw（容器查詢單位）。 */
-  font-size: calc(var(--subtitle-size) * 4.5);
-  margin-bottom: 0.25rem;
-  font-family: 'Inter', 'Noto Sans TC', 'Source Han Sans TC', 'Microsoft JhengHei', sans-serif;
-
-  /* 全大寫。CSS 與 JS 雙邊都做：
-     CSS 處理未執行 JS 的情況，JS 在拆層前 .toUpperCase()。
-     兩者缺一，三層 span 都會顯示原始大小寫。 */
-  text-transform: uppercase;
-
-  /* ===== 漸層文字處理（零外部依賴）=====
-     系統無真正的點陣字體，故用 CSS 近似：
-     ① -webkit-font-smoothing: none — 關掉字體抗鋸齒，
-        讓邊緣變成硬階梯，是像素感最主要的來源。
-     ② font-weight: 700 — 加重筆畫，粗體邊緣更接近點陣塊。
-     ③ letter-spacing — 略增字距讓每格分離，像字元格。
-     ④ 疊加 text-shadow 形成 1px 硬邊光暈（見下方）。 */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-
-  /* 大寫字母較寬，略增字距讓字距更均勻 */
-  letter-spacing: 0.05em;
-  font-weight: 700;
-  color: var(--text);
-
-  /* 多層字體陰影：近距離硬陰影造立體感 + 遠距離螢光暈造 玻璃擬態 輝光。
-     四層依序：近硬 → 稍遠 → 中暈 → 大範圍環境光。 */
-  text-shadow:
-    0 0 4px rgba(34, 211, 238, 0.9),
-    0 0 10px rgba(34, 211, 238, 0.7),
-    0 0 26px rgba(34, 211, 238, 0.5),
-    0 4px 12px rgba(0, 0, 0, 0.9);
-
-  /* 父層只做呼吸（動 opacity 與 text-shadow），
-     上下浮動交給每個 .gl-char，避免 transform 被覆蓋。
-     呼吸動畫會覆寫 text-shadow，故在 keyframes 內另行定義。 */
-  animation: title-breathe 2.4s ease-in-out infinite;
-}
-
-/* 三層共用定位
-   用 inline-block而非 flex —— 換行需靠 <br>，
-   flex 會把 <br> 當成 flex item 而忽略換行效果。
-   文字靠 .gl-layer 的 text-align: center 置中。 */
-.gl-layer {
-  display: block;
-  text-align: center;
-  white-space: normal;      /* 允許換行 */
-}
-
-.gl-layer--base {
-  position: relative;
-}
-
-.gl-layer--lime,
-.gl-layer--dim {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-/* 亮綠層：切上段 */
-.gl-layer--lime {
-  color: var(--accent);
-  clip-path: inset(20% 0 55% 0);
-  animation: slice-fade-lime 2.4s infinite linear alternate-reverse;
-}
-
-/* 暗綠層：切下段 */
-.gl-layer--dim {
-  color: var(--accent-dim);
-  clip-path: inset(60% 0 10% 0);
-  animation: slice-fade-dim 1.8s infinite linear alternate-reverse;
-}
-
-/* ===== 逐字波浪 =====
-   每個字依序延後 0.07s，形成由左至右推進的波浪。
-   週期 1.8s、單字行程 30px（−15px ↔ +15px），速度快且起伏明顯。 */
-.gl-char {
-  display: inline-block;
-  animation: char-wave 1.8s ease-in-out infinite;
-  animation-delay: calc(var(--i) * 0.07s);
-  /* 每字獨立的水平外距，讓換行時兩行各自置中 */
-  margin: 0 0.02em;
-}
-
-@keyframes char-wave {
-  0%, 100% { transform: translateY(0); opacity: 0.92; }
-  50%      { transform: translateY(-2px); opacity: 1; }
-}
-
-@keyframes slice-fade-lime {
-  0%, 100% { opacity: 0; }
-}
-
-@keyframes slice-fade-dim {
-  0%, 100% { opacity: 0; }
-}
-
-
-/* 尊重使用者的「減少動態效果」設定
-   —— 可及性要求，也是效能低的裝置的逃生門 */
 /* 動效降級處理
    ------------------------------------------------------------
    註：原設計會在 prefers-reduced-motion: reduce 時隱藏 canvas 與光暈，
    但這導致使用者即使已開啟動畫設定、JS 也正常建立元素，
    畫面上仍完全看不到特效（元素被 display:none 蓋掉）。
 
-   本網站的Canvas 背景光暈是視覺主題核心，不屬於裝飾性動畫，
-   因此不再依此設定關閉。僅保留過渡動畫的簡化，
-   讓操作回饋在低動態環境下仍即時可見。 */
+   Canvas 背景光暈已隨 2026-10-23 死碼清理一併移除，
+   此處僅保留過渡動畫的簡化，讓操作回饋在低動態環境下仍即時可見。 */
 @media (prefers-reduced-motion: reduce) {
   .work__ph,
-  .btn,
   .nav__link,
   .filterbar__btn,
   .work__trigger .work__ph {
     transition: none;
   }
-}
-
-
-/* ===== 5b. 3D 旋轉輪盤（首頁內容導覽）=====
-   幾何結構移植自「能力輪盤 · DeepSeek」：
-     .carousel-scene 設perspective，建立視距
-     .carousel 設 preserve-3d，開啟 3D 空間
-     每張卡用 nth-child 指定 rotateY(角度) translateZ(半徑)
-     —— rotateY讓卡片轉向，translateZ 把它推離軸心形成環
-
-   六張卡 → 角度間隔 360 ÷ 6 = 60°，translateZ 300px
-   （原檔為五張、72°、translateZ 300px）
-   ========================================== */
-.carousel-scene {
-  position: relative;
-  width: 100%;
-  height: 26rem;
-  perspective: 1000px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.carousel {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;      /* 關鍵：沒有這行 translateZ 完全無效 */
-  transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.carousel__card {
-  position: absolute;
-  width: 13rem;
-  height: 17.5rem;
-  left: 50%;
-  top: 50%;
-  margin-left: -6.5rem;                /* 用負margin 做水平置中 */
-  margin-top: -8.75rem;                /* 用負 margin 做垂直置中 */
-  border-radius: 2rem;
-
-  /* 半透明 + 模糊：讓後方背景光暈透出疊在卡片上 */
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border);
-
-  box-shadow: 0 1.5rem 3rem -0.75rem rgba(0, 0, 0, 0.9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1.25rem;
-  text-align: center;
-  text-decoration: none;
-  color: var(--text);
-  backface-visibility: visible;        /* 背面可見，不要翻轉隱藏 */
-  transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
-  cursor: pointer;
-}
-
-/* ===== 幾何核心：六張卡環繞圓周 =====
-   角度間隔 60°（360 ÷ 6），半徑 translateZ 300px。
-   順序不可顛倒：先 rotateY 轉向，再 translateZ 推離軸心。 */
-.carousel__card:nth-child(1) { transform: rotateY(0deg)   translateZ(300px); }
-.carousel__card:nth-child(2) { transform: rotateY(60deg)  translateZ(300px); }
-.carousel__card:nth-child(3) { transform: rotateY(120deg) translateZ(300px); }
-.carousel__card:nth-child(4) { transform: rotateY(180deg) translateZ(300px); }
-.carousel__card:nth-child(5) { transform: rotateY(240deg) translateZ(300px); }
-.carousel__card:nth-child(6) { transform: rotateY(300deg) translateZ(300px); }
-
-/* hover / focus 時卡片亮起，提示可點擊 */
-.carousel__card:hover,
-.carousel__card:focus-visible {
-  border-color: var(--accent);
-  background: rgba(30, 26, 56, 0.75);
-  box-shadow: 0 0 1.5rem rgba(34, 211, 238, 0.45);
-  outline: none;
-}
-
-/* 卡片內的圖示框 */
-.carousel__icon {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
-  border: 1px solid rgba(34, 211, 238, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: var(--primary);
-  background: rgba(34, 211, 238, 0.08);
-  font-family: var(--font-mono);
-  flex-shrink: 0;
-}
-
-.carousel__title {
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: var(--primary);
-  text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
-}
-
-.carousel__desc {
-  font-size: 0.78rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-}
-
-/* 輪盤下方的操作提示 */
-.carousel__hint {
-  text-align: center;
-  color: var(--text-dim);
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  font-family: var(--font-mono);
-  margin-top: 1rem;
-}
-
-/* 指標點：可點擊跳至該卡 */
-.carousel__dots {
-  display: flex;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-top: 0.75rem;
-}
-
-.carousel__dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  border: 1px solid var(--primary);
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
-  transition: background-color 0.25s, transform 0.25s;
-}
-
-.carousel__dot:hover {
-  background: var(--accent);
-}
-
-.carousel__dot.is-active {
-  background: var(--primary);
-  transform: scale(1.3);
-}
-
-/* 卡片在正前方時標題加強螢光，讓焦點明確 */
-.carousel__card.is-front .carousel__title {
-  text-shadow: 0 0 14px rgba(34, 211, 238, 0.9);
-}
-
-
-/* ===== 5c. 次要分段（首頁下方）===== */
-.section-band {
-  border-top: 1px solid var(--border);
-  margin-top: var(--spacing-xl);
-}
-
-.band-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: var(--spacing-md);
-}
-
-.band-item {
-  border: 1px solid var(--border);
-  background: rgba(34, 211, 238, 0.03);
-  border-radius: var(--radius);
-  padding: var(--spacing-md);
-}
-
-.band-item__title {
-  font-size: 0.95rem;
-  color: var(--primary);
-  margin-bottom: 0.35rem;
-  text-shadow: 0 0 6px rgba(34, 211, 238, 0.35);
-}
-
-.band-item__desc {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  margin-bottom: 0;
-  line-height: 1.6;
 }
 
 
@@ -1213,41 +743,11 @@ img {
 /* 480px：更緊湊的留白 */
 @media (max-width: 30rem) {
   body { font-size: 0.95rem; }
-  .hero { padding: var(--spacing-lg) var(--spacing-md); }
   .page,
   .page-header { padding: var(--spacing-lg) var(--spacing-md); }
   .panel { padding: var(--spacing-md); }
   .timeline__item { padding-left: 1.2rem; }
   .deflist__term { flex-basis: 100%; }
-}
-
-/* 窄螢幕：縮小輪盤避免超出視窗。
-   重點：translateZ 半徑也必須同步縮小 —— 卡片在 3D 空間中
-   會因透視放大，若只縮卡片尺寸仍會溢出（實測 375px 溢出 122px）。 */
-@media (max-width: 30rem) {
-  .carousel-scene { height: 20rem; }
-  .carousel { width: 10rem; height: 13rem; }
-  .carousel__card {
-    width: 10rem;
-    height: 13rem;
-    margin-left: -5rem;
-    margin-top: -6.5rem;
-    border-radius: 1.25rem;
-    gap: 0.35rem;
-    padding: 0.75rem;
-  }
-  /* 六張卡的角度不可少（維持環狀），但半徑縮小 */
-  .carousel__card:nth-child(1) { transform: rotateY(0deg)   translateZ(150px); }
-  .carousel__card:nth-child(2) { transform: rotateY(60deg)  translateZ(150px); }
-  .carousel__card:nth-child(3) { transform: rotateY(120deg) translateZ(150px); }
-  .carousel__card:nth-child(4) { transform: rotateY(180deg) translateZ(150px); }
-  .carousel__card:nth-child(5) { transform: rotateY(240deg) translateZ(150px); }
-  .carousel__card:nth-child(6) { transform: rotateY(300deg) translateZ(150px); }
-
-  .carousel__icon { width: 2.25rem; height: 2.25rem; font-size: 0.95rem; }
-  .carousel__title { font-size: 0.85rem; }
-  .carousel__desc { font-size: 0.65rem; }
-  .carousel__hint { font-size: 0.68rem; letter-spacing: 0.15em; }
 }
 
 /* --- 768px 以上：hamburger 收起，恢復橫向導覽 --- */
@@ -1276,36 +776,4 @@ img {
     border-bottom: 2px solid transparent;
   }
 
-}
-
-/* --- 1024px 以上：放寬留白 --- */
-@media (min-width: 1024px) {
-  .hero { padding: 5rem var(--spacing-md); }
-}
-
-/* ===== 11. 現代玻璃擬態：柔和動效 ===== */
-@keyframes soft-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes soft-float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-2px); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero__eyebrow,
-  .hero__subtitle,
-  .hero__desc,
-  .hero__title,
-  .gl-char {
-    animation: none;
-  }
 }

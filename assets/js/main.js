@@ -1,62 +1,34 @@
 /* ============================================================
-   e-Portfolio — 彭靖男 PENG Jing Nan
-   CIS222 Individual Assignment · 全站互動腳本
+   e-Portfolio ： 彭靖男 PENG Jing Nan
+   CIS222 Individual Assignment · 六頁共用互動腳本
    ------------------------------------------------------------
    互動元件（R5）：
      ① 技能篩選器（skills.html）
      ② 作品燈箱（portfolio.html）
-     ③ 導覽列目前頁高亮（全站）
-     ④ Hamburger 展開／收合（全站，mobile-first）
+     ③ 卡片點擊閃光（skills / portfolio）
+     ④ 作品列群組 hover 編排（portfolio.html）
+     ⑤ 自訂游標（portfolio.html，僅桌面）
 
-     ⑤ 卡片點擊閃光（全站）
-     ⑥ 3D 旋轉輪盤（僅首頁）
+   導覽列目前頁高亮已改由 assets/js/site.js 負責（.is-here），
+   本檔不再重複處理。
+
+   2026-10-23：原 3D 旋轉輪盤已隨首頁改版（page-is-the-object）
+   一併廢止 ：： 首頁改用「職位分頁」互動，全站無任何頁面帶
+   data-carousel，故 initCarousel 一併移除。
    ============================================================ */
 
 'use strict';
 
-
-/* ------------------------------------------------------------
-   ③ 導覽列目前頁高亮
-   依當前檔名自動標記，不需在每頁手動維護。
-   ------------------------------------------------------------ */
-function markActiveNav() {
-  const currentFile = window.location.pathname.split('/').pop() || 'index.html';
-
-  document.querySelectorAll('.nav__link').forEach(function (link) {
-    if (link.getAttribute('href') === currentFile) {
-      link.classList.add('is-active');
-    }
-  });
-}
-
-
-/* ------------------------------------------------------------
-   ④ Hamburger 展開／收合
-   ============================================================ */
-function initNavToggle() {
-  const toggle = document.querySelector('.nav__toggle');
-  const list = document.querySelector('.nav__list');
-  if (!toggle || !list) return;
-
-  toggle.addEventListener('click', function () {
-    const opened = list.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(opened));
-  });
-
-  // 視窗放大到桌面尺寸時，收起狀態必須清除，
-  // 否則窄螢幕收起後放大，選單會卡在不可見狀態。
-  window.addEventListener('resize', function () {
-    if (window.innerWidth >= 768) {
-      list.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  });
-}
+var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var FINE_POINTER = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 
 /* ------------------------------------------------------------
    ① 技能篩選器（skills.html）
-   ============================================================ */
+   依賴的 hook：data-skill-filter / data-category /
+   data-skill-item / data-skill-count / class is-selected
+   ：： 這些名字不能改，改了互動元件會直接死掉。
+   ------------------------------------------------------------ */
 function initSkillFilter() {
   const container = document.querySelector('[data-skill-filter]');
   if (!container) return;
@@ -88,8 +60,10 @@ function initSkillFilter() {
 
 /* ------------------------------------------------------------
    ② 作品燈箱（portfolio.html）
-   點縮圖開大圖；點背景、按 Esc、按關閉鈕皆可關閉。
-   ============================================================ */
+   點整列開大圖；點背景、按 Esc、按關閉鈕皆可關。
+   work-1~3.jpg 目前不存在，圖片載入失敗時不顯示破圖，
+   改顯示「圖片待補」與說明文字。
+   ------------------------------------------------------------ */
 function initLightbox() {
   const triggers = document.querySelectorAll('[data-lightbox]');
   const overlay = document.querySelector('[data-lightbox-overlay]');
@@ -102,11 +76,31 @@ function initLightbox() {
 
   function open(src, alt, caption) {
     lastFocused = document.activeElement;
+
     if (overlayImg) {
+      overlayImg.hidden = false;
+      overlayImg.removeAttribute('src');
+      overlayImg.setAttribute('alt', alt || '');
+      // 圖片不存在時不讓使用者看到破圖
+      overlayImg.onerror = function () {
+        overlayImg.hidden = true;
+        if (overlayCaption) {
+          overlayCaption.textContent = (caption || '') + '（圖片待補）';
+        }
+      };
       overlayImg.setAttribute('src', src);
-      overlayImg.setAttribute('alt', alt);
+    } else if (overlayCaption) {
+      overlayCaption.textContent = (caption || '') + '（圖片待補）';
     }
-    if (overlayCaption) overlayCaption.textContent = caption || '';
+
+    if (overlayImg && overlayImg.complete && overlayImg.naturalWidth === 0) {
+      overlayImg.hidden = true;
+    }
+
+    if (overlayCaption && overlayImg && !overlayImg.hidden) {
+      overlayCaption.textContent = caption || '';
+    }
+
     overlay.hidden = false;
     document.body.style.overflow = 'hidden';
     if (closeBtn) closeBtn.focus();
@@ -142,14 +136,14 @@ function initLightbox() {
 
 
 /* ------------------------------------------------------------
-   E 卡片點擊閃光
+   ③ 卡片點擊閃光
    用 event delegation，一次綁在 document 上即可涵蓋所有卡片。
-   ============================================================ */
+   ------------------------------------------------------------ */
 function initCardFlash() {
   const FLASH_CLASS = 'is-flash';
 
   document.addEventListener('click', function (event) {
-    const card = event.target.closest('.card, .skillrow, .work');
+    const card = event.target.closest('.skillrow, .work');
     if (!card) return;
 
     card.classList.remove(FLASH_CLASS);
@@ -166,168 +160,91 @@ function initCardFlash() {
 
 
 /* ------------------------------------------------------------
-   ⑤ 3D 旋轉輪盤（僅首頁）
-   ------------------------------------------------------------
-   與「能力輪盤」原檔的差異：
-     · 滑鼠與觸控統一為一組處理函式，並補上鍵盤操作（可及性）
-     · 拖曳結束後自動吸附到最近的卡片，避免歪著停住
-     · 加入指標點，可直接跳至指定卡片
-     · 指標點與is-front 狀態隨旋轉同步更新
+   ④ 作品列群組 hover 編排
+   游標所在列滿對比，同組其他列轉 --muted。
+   不用低透明度 ：： 可讀文字必須維持 4.5:1。
    ------------------------------------------------------------ */
-const CARD_STEP = 360 / 6;   // 六張卡，每張間隔 60 度
-let carouselAngle = 0;
-let carouselTimer = null;
+function initWorkHover() {
+  const list = document.querySelector('[data-works]');
+  if (!list) return;
 
-function initCarousel() {
-  const carousel = document.querySelector('[data-carousel]');
-  if (!carousel) return;
+  const rows = list.querySelectorAll('.work');
+  if (!rows.length) return;
 
-  const cards = carousel.querySelectorAll('.carousel__card');
-  const dots = document.querySelectorAll('.carousel__dot');
-  const cardCount = cards.length;
-  if (!cardCount) return;
-
-  // 若卡片數不是 6，重新計算間隔
-  const step = 360 / cardCount;
-
-  function setAngle(angle) {
-    carousel.style.transform = 'rotateY(' + angle + 'deg)';
-
-    // 卡片 i 自身的角度是 i*step，要讓它正對前方（0° 方向），
-    // 輪盤必須自轉 -i*step。因此反推目前正前方的卡片：
-    //   front ≡ -angle / step  (mod cardCount)
-    const norm = ((angle % 360) + 360) % 360;
-    const front = (cardCount - Math.round(norm / step)) % cardCount;
-
-    cards.forEach(function (c, i) {
-      c.classList.toggle('is-front', i === front);
-    });
-    dots.forEach(function (d, i) {
-      d.classList.toggle('is-active', i === front);
+  function point(row) {
+    list.classList.add('is-pointing');
+    rows.forEach(function (r) {
+      r.classList.toggle('is-point', r === row);
     });
   }
 
-  // 讓指定卡片转到正前方
-  function rotateTo(cardIndex) {
-    carouselAngle = -cardIndex * step;
-    setAngle(carouselAngle);
+  function release() {
+    list.classList.remove('is-pointing');
+    rows.forEach(function (r) { r.classList.remove('is-point'); });
   }
 
-  // --- 指標點 ---
-  dots.forEach(function (dot, i) {
-    dot.addEventListener('click', function () {
-      // 同樣先停止自動旋轉，否則會干擾切換動畫
-      stopAuto();
-      rotateTo(i);
-      setTimeout(startAuto, 700);
-    });
+  rows.forEach(function (row) {
+    row.addEventListener('mouseenter', function () { point(row); });
+    row.addEventListener('mouseleave', release);
+    row.addEventListener('focus', function () { point(row); });
+    row.addEventListener('blur', release);
   });
 
-  // --- 拖曳（滑鼠 + 觸控共用） ---
-  let dragging = false;
-  let lastX = 0;
-
-  function onStart(x) {
-    dragging = true;
-    lastX = x;
-    stopAuto();
-  }
-
-  function onMove(x) {
-    if (!dragging) return;
-    const delta = (x - lastX) * 0.4;
-    carouselAngle += delta;
-    lastX = x;
-    setAngle(carouselAngle);
-  }
-
-  function onEnd() {
-    if (!dragging) return;
-    dragging = false;
-    // 先停止自動旋轉，否則吸附加動畫進行的 0.6 秒內
-    // 自動旋轉又會疊加角度，導致吸附失敗。
-    stopAuto();
-    // 自動吸附：對齊到最近的卡片刻度（負值表示反向轉向正前方）
-    const snapped = -Math.round(-carouselAngle / step) * step;
-    carouselAngle = snapped;
-    setAngle(carouselAngle);
-    // 延後恢復自動旋轉，讓吸附動畫先完成
-    setTimeout(startAuto, 700);
-  }
-
-  carousel.addEventListener('mousedown', function (e) { onStart(e.clientX); });
-  window.addEventListener('mousemove', function (e) { onMove(e.clientX); });
-  window.addEventListener('mouseup', onEnd);
-
-  carousel.addEventListener('touchstart', function (e) {
-    e.preventDefault();
-    onStart(e.touches[0].clientX);
-  }, { passive: false });
-  window.addEventListener('touchmove', function (e) {
-    if (dragging) e.preventDefault();
-    onMove(e.touches[0].clientX);
-  }, { passive: false });
-  window.addEventListener('touchend', onEnd);
-
-  // --- 鍵盤操作（可及性：原檔缺此功能） ---
-  carousel.setAttribute('tabindex', '0');
-  carousel.setAttribute('role', 'group');
-  carousel.setAttribute('aria-label', '內容導覽輪盤，使用左右方向鍵切換');
-
-  carousel.addEventListener('keydown', function (e) {
-    // 取得目前正前方的卡片索引
-    const current = (cardCount - Math.round((((carouselAngle % 360) + 360) % 360) / step)) % cardCount;
-
-    if (e.key === 'ArrowLeft') {
-      e.preventDefault();
-      stopAuto();
-      rotateTo((current + cardCount - 1) % cardCount);
-      setTimeout(startAuto, 700);
-    } else if (e.key === 'ArrowRight') {
-      e.preventDefault();
-      stopAuto();
-      rotateTo((current + 1) % cardCount);
-      setTimeout(startAuto, 700);
-    }
-  });
-
-  // --- 自動旋轉（閒置時）---
-  function startAuto() {
-    if (carouselTimer) clearInterval(carouselTimer);
-    carouselTimer = setInterval(function () {
-      carouselAngle += 0.18;
-      setAngle(carouselAngle);
-    }, 50);
-  }
-
-  function stopAuto() {
-    if (carouselTimer) {
-      clearInterval(carouselTimer);
-      carouselTimer = null;
-    }
-  }
-
-  // 指標點 hover 時暫停自動旋轉，便於點擊
-  dots.forEach(function (dot) {
-    dot.addEventListener('mouseenter', stopAuto);
-    dot.addEventListener('mouseleave', startAuto);
-  });
-
-  setAngle(0);
-  startAuto();
+  list.addEventListener('mouseleave', release);
 }
 
 
 /* ------------------------------------------------------------
-   啟動
-   每個函式都會先確認對應元素存在，
-   因此同一份 main.js 可以安全地被全部 7 個頁面共用。
+   ⑤ 自訂游標（僅桌面）
+   一個跟隨指標的方塊，用 transform 位移，lerp 阻尼。
+   觸屏裝置不啟用；prefers-reduced-motion 時停用。
+   requestAnimationFrame 僅在指標移動期間運行，靜止即停。
    ------------------------------------------------------------ */
+function initCursor() {
+  const cursor = document.querySelector('[data-cursor]');
+  if (!cursor) return;
+  if (REDUCED || !FINE_POINTER) { cursor.remove(); return; }
+
+  const EASE = 0.18;
+  let tx = 0, ty = 0;
+  let cx = 0, cy = 0;
+  let raf = null;
+
+  function apply() {
+    cursor.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+  }
+
+  function tick() {
+    cx += (tx - cx) * EASE;
+    cy += (ty - cy) * EASE;
+    apply();
+
+    if (Math.abs(tx - cx) < 0.2 && Math.abs(ty - cy) < 0.2) {
+      cx = tx; cy = ty;
+      apply();
+      raf = null;
+      return;
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('pointermove', function (event) {
+    tx = event.clientX - 10;
+    ty = event.clientY - 10;
+    cursor.classList.add('is-on');
+    if (raf === null) raf = requestAnimationFrame(tick);
+  }, { passive: true });
+
+  document.addEventListener('pointerleave', function () {
+    cursor.classList.remove('is-on');
+  });
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
-  markActiveNav();
-  initNavToggle();
   initSkillFilter();
   initLightbox();
   initCardFlash();
-  initCarousel();
+  initWorkHover();
+  initCursor();
 });

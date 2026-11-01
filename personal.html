@@ -3,121 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>個人資訊 — 彭靖男 PENG Jing Nan</title>
-  <meta name="description" content="彭靖男的個人基本資料、語言能力、興趣與個人簡介。">
+  <title>個人資訊 · 彭靖男 PENG Jing Nan</title>
+  <meta name="description" content="彭靖男的個人基本資料、語言能力與興趣。">
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dossier.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
-  <header>
-    <nav class="nav" aria-label="主導覽">
-      <div class="nav__inner">
-        <a href="index.html" class="nav__brand">PENG Jing Nan</a>
-        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
-        <ul class="nav__list" id="nav-list">
-          <li><a href="index.html" class="nav__link">Home</a></li>
-          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
-          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
-          <li><a href="education.html" class="nav__link">教育背景</a></li>
-          <li><a href="skills.html" class="nav__link">專精技能</a></li>
-          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
-          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
-        </ul>
-      </div>
+  <!-- 全站背景：引力場影片（材質層，不承載資訊、不接受互動） -->
+  <div class="bgfield" aria-hidden="true">
+    <video class="bgfield__video" autoplay muted loop playsinline preload="metadata">
+      <source src="assets/video/field.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <header class="masthead" id="top">
+    <a class="masthead__mark" href="index.html">彭靖男</a>
+    <nav class="masthead__links" aria-label="主導覽">
+      <a href="personal.html" aria-current="page">個人資訊</a>
+      <a href="experience.html">工作經驗</a>
+      <a href="education.html">教育背景</a>
+      <a href="skills.html">專精技能</a>
+      <a href="portfolio.html">作品集</a>
     </nav>
+    <a class="masthead__act" href="index.html#contact">聯絡</a>
   </header>
 
   <main>
-    <section class="page-header">
-      <h1 class="page-header__title">個人資訊</h1>
-      <p class="page-header__lead">
+
+    <section class="pagehead">
+      <p class="pagehead__en" data-rise data-rise-as="rise">Particulars</p>
+      <h1 class="pagehead__cn" data-rise data-rise-as="rise">個人資訊</h1>
+    </section>
+
+    <section class="block">
+      <p class="block__lead" data-rise data-rise-as="rise">
         <!-- TODO: 換成你的一句話自我介紹 -->
         這一頁介紹你的基本資料、語言能力與興趣。
       </p>
-    </section>
 
-    <div class="page">
+      <div class="split">
 
-      <!-- 個人照片：圖片放在此處，之後可自行替換 -->
-      <section class="panel">
-        <h2 class="panel__title">個人照片</h2>
-        <figure class="portrait">
+        <!-- 左欄：照片位。圖片到位後把 .portrait__ph 換成 <img> 即可 -->
+        <figure class="portrait" data-rise data-rise-as="wipe">
           <!-- TODO: 之後可改成 <img src="assets/images/photo.jpg" alt="彭靖男的個人照片"> -->
           <div class="portrait__ph" role="img" aria-label="彭靖男的個人照片佔位區">
             <span>照片位置</span>
           </div>
-          <figcaption class="portrait__cap">彭靖男 · PENG Jing Nan</figcaption>
+          <figcaption class="portrait__cap" data-rise data-rise-as="fade">彭靖男 · PENG Jing Nan</figcaption>
         </figure>
-      </section>
 
-      <!-- 基本資料 -->
-      <section class="panel">
-        <h2 class="panel__title">基本資料</h2>
-        <dl class="deflist">
-          <div class="deflist__row">
-            <dt class="deflist__term">姓名</dt>
-            <dd class="deflist__desc">彭靖男（PENG Jing Nan）</dd>
-          </div>
-          <div class="deflist__row">
-            <dt class="deflist__term">電郵</dt>
-            <!-- TODO: 換成你的聯絡信箱，或整行刪除 -->
-            <dd class="deflist__desc">example@email.com</dd>
-          </div>
-          <div class="deflist__row">
-            <dt class="deflist__term">電話</dt>
-            <dd class="deflist__desc">0000 0000</dd>
-          </div>
-          <div class="deflist__row">
-            <dt class="deflist__term">所在地</dt>
-            <dd class="deflist__desc">香港</dd>
-          </div>
-          <div class="deflist__row">
-            <dt class="deflist__term">專業方向</dt>
-            <!-- TODO: 換成你的主修或想從事的領域 -->
-            <dd class="deflist__desc">Artificial Intelligence &amp; ICT</dd>
-          </div>
-        </dl>
-      </section>
+        <!-- 右欄：基本資料、語言能力、興趣 -->
+        <div class="particulars">
 
-      <!-- 語言能力 -->
-      <section class="panel">
-        <h2 class="panel__title">語言能力</h2>
-        <div class="skillbars">
-          <div class="skillbar">
-            <p class="skillbar__label">繁體中文（母語）</p>
-            <div class="skillbar__track"><span class="skillbar__fill" style="width:100%"></span></div>
+          <div class="block__head" data-rise data-rise-as="rise">
+            <h2>基本資料</h2>
           </div>
-          <div class="skillbar">
-            <p class="skillbar__label">英語（工作語言）</p>
-            <div class="skillbar__track"><span class="skillbar__fill" style="width:75%"></span></div>
+
+          <dl class="facts facts--grid">
+            <div data-rise data-rise-as="rise"><dt>姓名</dt><dd>彭靖男（PENG Jing Nan）</dd></div>
+            <div data-rise data-rise-as="rise">
+              <dt>電郵</dt>
+              <!-- TODO: 換成你的聯絡信箱，或整行刪除 -->
+              <dd>example@email.com</dd>
+            </div>
+            <div data-rise data-rise-as="rise"><dt>電話</dt><dd>0000 0000</dd></div>
+            <div data-rise data-rise-as="rise"><dt>所在地</dt><dd>香港</dd></div>
+            <div data-rise data-rise-as="rise">
+              <dt>專業方向</dt>
+              <!-- TODO: 換成你的主修或想從事的領域 -->
+              <dd>Artificial Intelligence &amp; ICT</dd>
+            </div>
+          </dl>
+
+          <div class="block__head" data-rise data-rise-as="rise">
+            <h2>語言能力</h2>
           </div>
-          <!-- TODO: 依你的實際情況調整百分比，或增減項目 -->
-          <div class="skillbar">
-            <p class="skillbar__label">粵語</p>
-            <div class="skillbar__track"><span class="skillbar__fill" style="width:90%"></span></div>
+
+          <div class="langs">
+            <!-- TODO: 依你的實際情況調整百分比，或增減項目 -->
+            <div class="lang" data-rise data-rise-as="push">
+              <p class="lang__label">繁體中文（母語）</p>
+              <p class="lang__value">100%</p>
+              <div class="lang__track"><span class="lang__fill" style="width:100%"></span></div>
+            </div>
+            <div class="lang" data-rise data-rise-as="push">
+              <p class="lang__label">英語（工作語言）</p>
+              <p class="lang__value">75%</p>
+              <div class="lang__track"><span class="lang__fill" style="width:75%"></span></div>
+            </div>
+            <div class="lang" data-rise data-rise-as="push">
+              <p class="lang__label">粵語</p>
+              <p class="lang__value">90%</p>
+              <div class="lang__track"><span class="lang__fill" style="width:90%"></span></div>
+            </div>
           </div>
+
+          <div class="block__head" data-rise data-rise-as="rise">
+            <h2>興趣</h2>
+          </div>
+
+          <ul class="interests">
+            <!-- TODO: 換成你的興趣 -->
+            <li data-rise data-rise-as="drop">閱讀</li>
+            <li data-rise data-rise-as="drop">科技</li>
+            <li data-rise data-rise-as="drop">攝影</li>
+          </ul>
+
         </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- 興趣 -->
-      <section class="panel">
-        <h2 class="panel__title">興趣</h2>
-        <ul class="taglist">
-          <!-- TODO: 換成你的興趣 -->
-          <li class="tag">閱讀</li>
-          <li class="tag">科技</li>
-          <li class="tag">攝影</li>
-        </ul>
-      </section>
-
-    </div>
   </main>
 
-  <footer class="footer">
-    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  <footer class="colophon" data-rise data-rise-as="fade">
+    <p class="colophon__name">Peng Jing Nan</p>
+    <p class="colophon__meta">
+      <a href="index.html">Home</a>
+      <a href="sitemap.html">Site Map</a>
+      <a href="#top">回到頂部</a>
+      <span>© 2026 彭靖男 · CIS222 Individual Assignment</span>
+    </p>
   </footer>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/site.js"></script>
 </body>
 </html>

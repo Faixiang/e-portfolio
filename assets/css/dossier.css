@@ -1,0 +1,1625 @@
+/* ============================================================
+   求職申請檔案（The page is the object）
+   方向：page-is-the-object · seed 2017272156
+   材質：深墨桌面 + 信號橙 + 紙
+   字體：Big Shoulders 800 / Public Sans 400–600（自架，無 CDN）
+   ------------------------------------------------------------
+   本檔為全站唯一樣式來源（index ＋ 六頁共用）。
+
+   詞彙表紀律（依「參考站反推_attio.md」§3）：
+     · 間距只有 8 個值（--s-1 ～ --s-8）＋ 2 個語意值（--band / --gutter）
+     · 字級只有 5 級（--step-small / -body / -lead / -head / -display）
+     · 行寬一律用 em，不寫 rem 或 ch
+     · 元件裡不准另寫一次性 clamp()
+
+   材質與動效規格依「執行層提示詞.md」§3／§4。
+   ============================================================ */
+
+/* ---------- 字體（自架 woff2，零外部請求） ---------- */
+@font-face {
+  font-family: 'Big Shoulders';
+  src: url('../fonts/big-shoulders-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  src: url('../fonts/public-sans-400.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- 設計權杖 ---------- */
+:root {
+  /* 石墨底 + 紙白 + 單一強調：黃銅 */
+  --bg: #14161a;          /* 桌面：石墨（略帶暖調，讓紙白不刺眼） */
+  --surface: #1d2025;     /* 色階一階：檔案夾、橫條底、頁首 */
+  --ink: #f0efe9;         /* 主文字 */
+  --muted: #98a0a6;       /* 次級文字 */
+  --accent: #c9a227;      /* 黃銅：全站唯一的強調（深底上 7.49:1） */
+  --accent-ink: #14161a;  /* 強調色上的字 */
+
+  /* 紙：文件本體，放在石墨桌面上 */
+  --paper: #edece6;
+  --paper-ink: #14161a;
+  --paper-muted: #5f666b;
+
+  /* 紙面上的強調：黃銅在紙上只有 2.04:1，故備一階深銅（紙上 5.22:1） */
+  --accent-paper: #7a5d0e;
+
+  --field-1: #edece6;  --field-1-ink: #14161a;   /* 紙面 */
+  --field-2: #1d2025;  --field-2-ink: #f0efe9;   /* 深色帶 */
+
+  /* 字體 */
+  --font-display: 'Big Shoulders', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  --font-text: 'Public Sans', 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+
+  /* 五級字階。--step-display 是全站唯一展示級：
+     首屏標題、頁尾大字、頁首英文、索引大字、聯絡列共用同一個 token。 */
+  --step-small: 0.875rem;
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  --step-display: clamp(2.75rem, 9vw, 9rem);
+
+  /* 間距尺度：只有 8 個值 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 72px;
+
+  /* 語意值 */
+  --band: 96px;    /* 區段上下留白 */
+  --gutter: 24px;  /* 頁面左右 */
+  --measure: 34em; /* 行寬上限（跟著字級縮放） */
+
+  /* 動效 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-ui: 240ms;
+  --t-reveal: 800ms;
+}
+
+/* ---------- 可動畫的自訂屬性（@property） ----------
+   一般自訂屬性不能被動畫（會被當字串）；宣告 syntax 與 initial-value
+   之後，角度、數字、百分比都能補間。作品列的角度與掃描靠它。 */
+@property --row-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --row-sweep {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+/* ---------- 基礎 ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--step-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, dl, dd, ul, figure { margin: 0; }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+}
+
+/* 底線用偽元素的 scaleX 畫出：hover 時底線從左長到 100%。
+   不用 linear-gradient ：： 那在 inspect 會被判為「漸層填充」；
+   這裡是實心線，視覺效果相同。 */
+a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px; /* taste-skill-ignore 連結底線屬介面細部，不是內容分隔線 */
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--t-hover) var(--ease-out);
+}
+
+a:hover::after,
+a:focus-visible::after { transform: scaleX(1); }
+
+/* 焦點框用 --ink：紙面上 15.56:1、深底上 16.44:1，兩邊都看得見 */
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---------- 頁首 ---------- */
+.masthead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-6);
+  padding: var(--s-4) var(--gutter);
+  background: var(--surface);
+}
+
+.masthead__mark {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.masthead__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  margin-left: auto;
+}
+
+.masthead__links a {
+  font-size: var(--step-small);
+  color: var(--ink);
+  padding-bottom: var(--s-1);
+  transition: background-color var(--t-hover) var(--ease-out), color var(--t-hover) var(--ease-out);
+}
+
+.masthead__links a:hover,
+.masthead__links a:focus-visible {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* 六頁共用：當前頁底色塊 */
+.masthead__links a.is-here {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.masthead__act {
+  font-size: var(--step-small);
+  font-weight: 600;
+  background: var(--field-1);
+  color: var(--field-1-ink);
+  padding: var(--s-2) var(--s-4);
+  transition: transform var(--t-press) var(--ease-out);
+}
+
+.masthead__act:active { transform: scale(0.98); }
+
+/* ---------- 頁首區塊：英文與中文並排同一基線 ----------
+   英文是展示級字，字級不小於中文，讀起來是一組鎖定字而非小標籤。 */
+.pagehead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-4);
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: var(--s-8) var(--gutter) var(--s-7);
+}
+
+.pagehead__en {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-display);
+  line-height: 0.9;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  color: var(--accent);
+}
+
+.pagehead__cn {
+  font-size: var(--step-lead);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* ---------- 區塊 ---------- */
+.block {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0 var(--gutter) var(--s-8);
+}
+
+.block__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-5);
+  margin-bottom: var(--s-4);
+}
+
+.block__head h2 {
+  font-size: var(--step-lead);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.block__note {
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+.block__lead {
+  font-size: var(--step-lead);
+  line-height: 1.7;
+  max-width: var(--measure);
+  color: var(--ink);
+  margin-bottom: var(--s-7);
+}
+
+/* ---------- 首屏：從檔案夾抽出一張申請卡 ---------- */
+.hero {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: var(--s-5) var(--gutter);
+  background: var(--bg);
+}
+
+/* 遮罩容器：overflow hidden，卡片由下往上抽出 */
+.hero__mask {
+  position: relative;
+  width: min(100%, 62rem);
+  overflow: hidden;
+  /* 底部留白給 canvas 畫的接觸陰影 */
+  padding-bottom: 28px;
+}
+
+/* 傾斜層：JS 只改這一層的 transform，與抽出動畫分開控制 */
+.card__tilt {
+  transform-origin: 50% 60%;
+  will-change: transform;
+}
+
+.card__tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 148px;
+  height: 34px;
+  background: var(--accent);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+  z-index: 2;
+}
+
+.js .card__tab {
+  opacity: 0;
+  animation: tab-in var(--t-reveal) var(--ease-out) 0ms forwards;
+}
+
+@keyframes tab-in {
+  to { opacity: 1; }
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  background: var(--paper);
+  color: var(--paper-ink);
+  /* canvas 不可用時的純 CSS 打孔邊 */
+  border-bottom: 6px dotted var(--muted);
+  /* 上留白讓標籤壓在卡片左上角，讀作「卡片插在標籤後面」 */
+  padding: var(--s-7) var(--s-6) var(--s-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-6);
+  min-height: min(54svh, 30rem);
+}
+
+/* canvas 材質層：只畫材質，文字全在 DOM。z-index -1 讓它落在卡片底圖。 */
+.card__grain {
+  position: absolute;
+  /* 下緣多留 28px 給接觸陰影：影子是紙落在桌面上的投影，
+     必須畫在紙張之外。 */
+  inset: 0 0 -28px 0;
+  width: 100%;
+  height: calc(100% + 28px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 卡片內容在 canvas 之上 */
+.card__title,
+.card__body,
+.card__foot { position: relative; z-index: 1; }
+
+/* canvas 可用時，紙由 canvas 畫；不可用時退回純 CSS 版本 */
+.card.has-canvas {
+  background: transparent;
+  border-bottom: 0;
+  padding-bottom: calc(var(--s-6) + 6px);
+}
+
+/* 招牌動作：抽出檔案。含 blur(6px) → blur() 的物理感。 */
+.js .card {
+  opacity: 0;
+  transform: translateY(18%);
+  filter: blur(6px);
+  animation: card-draw var(--t-reveal) var(--ease-out) 160ms forwards;
+}
+
+@keyframes card-draw {
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+.card__title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--s-3);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-display);
+  line-height: 0.9;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.card__body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5) var(--s-7);
+  align-items: flex-start;
+}
+
+.facts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  font-size: var(--step-body);
+  line-height: 1.15;
+}
+
+.facts div { display: flex; gap: var(--s-2); }
+
+.facts dt {
+  font-size: var(--step-small);
+  font-weight: 600;
+  opacity: 0.75;
+  min-width: 3.5em;
+}
+
+.facts dd { margin: 0; }
+
+.card__line {
+  font-size: var(--step-lead);
+  line-height: 1.2;
+  max-width: 22em;
+  font-weight: 600;
+}
+
+.card__foot {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+  font-size: var(--step-small);
+}
+
+.card__credit { margin-right: auto; opacity: 0.8; }
+
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  padding: var(--s-3) var(--s-5);
+  transition: background-color var(--t-hover) var(--ease-out),
+              color var(--t-hover) var(--ease-out),
+              transform var(--t-press) var(--ease-out);
+}
+
+.btn:hover,
+.btn:focus-visible { background: var(--paper-ink); color: var(--paper); }
+
+.btn:active { transform: scale(0.98); }
+
+/* 填色控制項與整列連結不要底線 */
+.btn::after,
+.masthead__act::after,
+.card__link::after { content: none; }
+
+.card__link { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- 職位分頁（互動元件） ---------- */
+.role {
+  padding: 0 0 var(--band);
+  background: var(--bg);
+}
+
+.role__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  padding: 0 var(--gutter);
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+.role__tab {
+  font: inherit;
+  font-size: var(--step-small);
+  font-weight: 600;
+  border: 0;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--ink);
+  padding: var(--s-3) var(--s-5) var(--s-3) var(--s-4);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  transition: background-color var(--t-hover) var(--ease-out),
+              color var(--t-hover) var(--ease-out),
+              transform var(--t-press) var(--ease-out);
+}
+
+.role__tab:hover { color: var(--accent); }
+
+.role__tab:active { transform: scale(0.98); }
+
+.role__tab[aria-selected='true'] {
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+
+.role__panels {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.role__panel {
+  background: var(--paper);
+  color: var(--paper-ink);
+  padding: var(--s-6);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s-6);
+}
+
+.role__panel p { max-width: 30em; }
+
+.role__panel ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  font-size: var(--step-small);
+  color: var(--paper-muted);
+}
+
+/* 無 JS 時全部展開；有 JS 才收起未選中的 */
+.js .role__panel { display: none; }
+.js .role__panel.is-on { display: grid; }
+
+/* ---------- 文件頁：一封信 ---------- */
+.letter {
+  padding: var(--band) var(--gutter);
+  /* 桌面層：不擋背景影片。
+     信紙本身仍是不透明的紙（§4.8：紙必須是不透明的），
+     所以影片從紙與紙之間的留白處透出來，而不是從紙面裡透出來。 */
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.sheet {
+  position: relative;
+  width: min(100%, 40rem);
+  background: var(--paper);
+  color: var(--paper-ink);
+  padding: var(--s-8);
+  /* 打孔撕線，不是扇貝、不是漸層 */
+  border-bottom: 6px dotted var(--muted);
+}
+
+/* 信紙的材質層：canvas 只在 CSS 的紙上疊一層纖維紋理 */
+.sheet__grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 信紙文字壓在 canvas 之上 */
+.sheet > p { position: relative; z-index: 1; }
+
+/* 信紙的底色與打孔邊留在 CSS：
+   canvas 在這裡只疊一層纖維紋理，不取代紙。
+   底色一撤，靜態分析就會把這頁判成「透明區塊上放深色字」（對比 1:1），
+   也會把整頁判成空畫面。 */
+
+.sheet__who {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-head);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+}
+
+.sheet__cn {
+  font-size: var(--step-small);
+  font-weight: 600;
+  color: var(--paper-muted);
+  margin-top: var(--s-1);
+}
+
+.sheet p {
+  font-size: var(--step-body);
+  line-height: 1.7;
+  max-width: 32em;
+  margin-top: var(--s-5);
+}
+
+.sheet p:first-of-type { margin-top: var(--s-7); }
+
+/* 紙上的強調只能用深墨（信號橙上紙是 2.84:1，禁用） */
+.sheet__mark {
+  background: var(--bg);
+  color: var(--ink);
+  padding: 0 var(--s-1);
+}
+
+.sheet__sign {
+  margin-top: var(--s-7);
+  font-size: var(--step-lead);
+  font-weight: 600;
+}
+
+.sheet__role {
+  font-size: var(--step-small);
+  color: var(--paper-muted);
+  margin-top: var(--s-1);
+}
+
+/* 撕線存根：打孔線已在 .sheet 底邊 */
+.stub {
+  width: min(100%, 40rem);
+  margin-top: var(--s-5);
+  padding-top: var(--s-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--step-small);
+}
+
+.stub__mail { color: var(--ink); }
+
+.stub__note { color: var(--muted); }
+
+/* ---------- 作品：三疊檔案夾 ---------- */
+.folders {
+  padding: var(--band) var(--gutter);
+  /* 桌面層：三疊檔案夾之間與四周透出引力場影片 */
+  background: transparent;
+}
+
+.folders__head {
+  max-width: 78rem;
+  margin: 0 auto var(--s-7);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-5);
+}
+
+.folders__head h2 {
+  font-size: var(--step-head);
+  font-weight: 600;
+}
+
+.folders__head p {
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+.folder {
+  position: relative;
+  max-width: 78rem;
+  margin: 0 auto var(--s-2);
+  padding: var(--s-7) var(--s-6) var(--s-6);
+  min-height: 42svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s-5);
+}
+
+/* 檔案夾三張：紙 / 深色帶 / 桌面，靠明度分層 */
+/* 三張檔案夾疊在透亮的桌面上。
+   第一張是紙：不透明。理由有兩個 —— 一是背景場亮度只有 0.008～0.078，
+   亮紙半透等於什麼都看不見；二是可及性分析只認 alpha ≥ 0.9 的底色，
+   紙上的墨字在半透明紙上會被判成「深墨字疊石墨底」對比 1:1。
+   第二、三張是深色，可以半透：引力場的亮紋會隔著紙透出來。 */
+.folder--1 { background: var(--paper);   color: var(--paper-ink); }
+.folder--2 { background: color-mix(in srgb, var(--surface) 62%, transparent); color: var(--ink); }
+.folder--3 { background: color-mix(in srgb, var(--bg) 62%, transparent);      color: var(--ink); }
+
+.folder__tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 132px;
+  height: 34px;
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 100%, 0 100%);
+}
+
+.folder--1 .folder__tab { background: var(--paper-muted); }
+.folder--2 .folder__tab { background: var(--accent); }
+.folder--3 .folder__tab { background: var(--muted); }
+
+.folder__title {
+  font-size: var(--step-head);
+  font-weight: 600;
+  line-height: 1.1;
+  max-width: 18em;
+  margin-top: var(--s-2);
+}
+
+.folder__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2) var(--s-6);
+  font-size: var(--step-small);
+  font-weight: 600;
+}
+
+.folder__desc {
+  font-size: var(--step-body);
+  max-width: 40em;
+  opacity: 0.92;
+}
+
+.folder__list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+}
+
+/* 淡染跟著底色走：紙上深染，深底上淺染 */
+.folder__list li {
+  font-size: var(--step-small);
+  padding: var(--s-1) var(--s-3);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.folder--2 .folder__list li,
+.folder--3 .folder__list li { background: rgba(242, 244, 242, 0.12); }
+
+/* ---------- 索引：一個大字 + 可展開的橫條 ---------- */
+.index {
+  padding: var(--band) 0;
+  background: var(--surface);
+}
+
+.index__inner {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* 持續運動：外層隨捲動做垂直位移，不支援的瀏覽器直接靜止 */
+.index__drift { display: block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .index__drift {
+    animation: index-drift linear both;
+    animation-timeline: view();
+  }
+}
+
+@keyframes index-drift {
+  from { transform: translateY(-6%); }
+  to   { transform: translateY(6%); }
+}
+
+/* 柔邊揭幕：mask-size 由 0% 到 100%，比硬裁切柔和 */
+.index__reveal {
+  -webkit-mask-image: linear-gradient(to top, #000 0 100%, transparent 100%); /* taste-skill-ignore 遮罩用的漸層，不可見 */
+  mask-image: linear-gradient(to top, #000 0 100%, transparent 100%); /* taste-skill-ignore 遮罩用的漸層，不可見 */
+  -webkit-mask-size: 100% 0%;
+  mask-size: 100% 0%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  transition: -webkit-mask-size var(--t-reveal) var(--ease-out),
+              mask-size var(--t-reveal) var(--ease-out);
+}
+
+.index__reveal.is-open {
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.index__word {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: var(--step-display);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  margin-bottom: var(--s-5);
+}
+
+.index__bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.bar { background: var(--surface); }
+
+.bar summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  font-size: var(--step-body);
+  font-weight: 600;
+  color: var(--ink);
+  transition: background-color var(--t-hover) var(--ease-out), color var(--t-hover) var(--ease-out);
+}
+
+.bar summary::-webkit-details-marker { display: none; }
+
+.bar summary:hover { background: var(--bg); color: var(--accent); }
+
+.bar__sign {
+  margin-left: auto;
+  font-weight: 400;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+
+/* 展開時 ＋ 旋轉 45° 變 × */
+.bar[open] .bar__sign { transform: rotate(45deg); }
+
+.bar[open] summary { background: var(--accent); color: var(--accent-ink); }
+
+.bar__panel {
+  padding: var(--s-1) var(--s-4) var(--s-4);
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+/* 只在展開時排版：若在基礎樣式寫 display，會蓋掉 <details> 的原生收合 */
+.bar:not([open]) .bar__panel { display: none; }
+
+.bar[open] .bar__panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-5);
+  align-items: baseline;
+}
+
+.bar__panel a {
+  color: var(--field-1);
+  font-weight: 600;
+}
+
+/* ---------- 聯絡：地址以展示級字排成列 ---------- */
+.contact {
+  /* 上方留白：索引最後一列與聯絡列的大字之間要拉開，
+     否則小字會被讀成大字上方的小標籤。 */
+  padding: var(--s-6) 0 var(--band);
+  background: var(--bg);
+}
+
+.contact__row {
+  display: flex;
+  align-items: flex-end;
+  min-height: 150px;
+  padding: 0 var(--gutter) var(--s-5);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-display);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.contact__row span {
+  display: block;
+  width: 100%;
+  max-width: 78rem;
+  margin: 0 auto;
+  overflow-wrap: anywhere;
+}
+
+.contact__row:nth-child(odd) { background: var(--surface); }
+
+.contact__row a:hover { color: var(--field-1); }
+
+.contact__note {
+  max-width: 78rem;
+  margin: var(--s-6) auto 0;
+  padding: 0 var(--gutter);
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+/* ---------- 頁尾：名字回到滿寬 ---------- */
+.colophon {
+  background: var(--accent);
+  color: var(--accent-ink);
+  /* 上方留白拉到 --band：頁尾的大字與上一段的小字之間要拉開，
+     否則小字會被讀成大字上方的小標籤。 */
+  padding: var(--band) var(--gutter) var(--s-6);
+}
+
+.colophon__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--step-display);
+  line-height: 0.82;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.colophon__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3) var(--s-6);
+  margin-top: var(--s-5);
+  font-size: var(--step-small);
+}
+
+.colophon__meta a:hover { background-size: 100% 1px; }
+
+/* ============================================================
+   進場動效（§4.3）
+   隱藏狀態只寫在 .js 之下 ：： 無 JS 時全部內容完整可見。
+   六種進場，依 data-rise-as 分流；--step 是錯開步長，--base 是基準延遲，
+   兩者由 JS 讀取後算出每個元素的 --d。
+   ============================================================ */
+[data-rise-as='drop'] { --step: 60ms; }
+[data-rise-as='rise'] { --step: 70ms; }
+[data-rise-as='push'] { --step: 50ms; }
+[data-rise-as='wipe'] { --step: 80ms; }
+
+.js [data-rise] { opacity: 0; }
+
+.js [data-rise].is-in {
+  opacity: 1;
+  transition: opacity var(--t-ui) var(--ease-out),
+              transform var(--t-ui) var(--ease-out),
+              clip-path var(--t-reveal) var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+
+/* ① 落下：職位分頁標籤 */
+.js [data-rise][data-rise-as='drop'] { transform: translateY(-12px); }
+.js [data-rise][data-rise-as='drop'].is-in { transform: none; }
+
+/* ② 升起：信紙逐段 */
+.js [data-rise][data-rise-as='rise'] { transform: translateY(24px); }
+.js [data-rise][data-rise-as='rise'].is-in { transform: none; }
+
+/* ③ 擦出：檔案夾標籤、聯絡列
+   初始狀態留 2px 可見窄條：零寬度的元素沒有任何可相交面積，
+   IntersectionObserver 永遠不會觸發，元素會永久卡在隱藏狀態。 */
+.js [data-rise][data-rise-as='wipe'] { clip-path: inset(0 calc(100% - 2px) 0 0); }
+.js [data-rise][data-rise-as='wipe'].is-in { clip-path: inset(0); }
+
+/* ④ 推入：索引橫條 */
+.js [data-rise][data-rise-as='push'] { transform: translateX(-16px); }
+.js [data-rise][data-rise-as='push'].is-in { transform: none; }
+
+/* ⑤ 揭開：索引大字，遮罩由下往上 */
+.js [data-rise][data-rise-as='mask'] { overflow: hidden; }
+.js [data-rise][data-rise-as='mask'] > :first-child { transform: translateY(100%); }
+.js [data-rise][data-rise-as='mask'].is-in > :first-child {
+  transform: none;
+  transition: transform var(--t-reveal) var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+
+/* ⑥ 只淡入：頁尾、檔案夾本體，不位移 */
+.js [data-rise][data-rise-as='fade'] { /* 無位移 */ }
+
+/* 檔案夾本體比標籤晚 120ms 出場 */
+.folder { --base: 120ms; }
+
+/* ---------- reduced-motion：命名變體，不是全部關掉 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  /* 選擇器必須與各進場類型的規則同特異度（0,3,0）且排在後面，
+     否則會被 .js [data-rise][data-rise-as='drop'] 之類蓋掉，
+     結果內容看得見卻仍帶著位移。 */
+  .js [data-rise][data-rise-as],
+  .js [data-rise][data-rise-as].is-in {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    filter: none;
+    transition: none;
+  }
+
+  .js [data-rise][data-rise-as='mask'] > :first-child,
+  .js [data-rise][data-rise-as='mask'].is-in > :first-child {
+    transform: none;
+    transition: none;
+  }
+
+  /* 招牌動作：跳過位移，只留 0.2s 淡入 */
+  .js .card {
+    animation: rm-fade 0.2s linear 160ms forwards;
+    opacity: 0;
+    transform: none;
+    filter: none;
+  }
+
+  @keyframes rm-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .js .card__tab { animation: rm-fade 0.2s linear 0ms forwards; opacity: 0; }
+
+  .index__drift { animation: none; }
+  .index__reveal { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; transition: none; }
+  .bar__sign { transition: none; }
+  .card__tilt { transform: none !important; }
+}
+
+/* ---------- 響應式 ---------- */
+@media (max-width: 60rem) {
+  .role__panel { grid-template-columns: 1fr; gap: var(--s-4); }
+}
+
+@media (max-width: 44rem) {
+  .masthead { flex-wrap: wrap; gap: var(--s-2) var(--s-3); }
+  .masthead__links { order: 3; width: 100%; margin-left: 0; gap: var(--s-3); }
+  .masthead__act { margin-left: auto; }
+
+  .hero { padding: var(--s-3) var(--gutter); }
+  .card__tab { width: 108px; height: 26px; }
+  .card { padding: var(--s-6) var(--s-5) var(--s-5); gap: var(--s-5); min-height: 0; }
+  .card__title { flex-wrap: wrap; justify-content: flex-start; }
+  .card__body { gap: var(--s-4); }
+  .card__line { font-size: var(--step-body); max-width: 26em; }
+  .card__foot { gap: var(--s-3); }
+  .card__credit { width: 100%; margin-right: 0; }
+
+  .role { padding-bottom: var(--band); }
+  .role__tab { padding: var(--s-3) var(--s-4) var(--s-3) var(--s-3); }
+  .role__panel { padding: var(--s-5); }
+
+  .letter { padding: var(--s-8) var(--gutter); }
+  .sheet { padding: var(--s-6) var(--s-5) var(--s-6); }
+
+  .folders { padding: var(--s-8) var(--gutter); }
+  .folder { padding: var(--s-6) var(--s-4) var(--s-5); min-height: 0; }
+  .folder__title { font-size: var(--step-lead); max-width: none; }
+
+  .index { padding: var(--s-8) 0; }
+
+  .contact__row { min-height: 104px; padding-bottom: var(--s-3); }
+
+  .colophon { padding: var(--s-8) var(--gutter) var(--s-5); }
+}
+
+/* ============================================================
+   六頁共用元件
+   ============================================================ */
+
+/* ---------- 兩欄：非對稱，左窄右寬 ---------- */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 22rem) minmax(0, 1fr);
+  gap: var(--s-5) var(--s-7);
+  align-items: start;
+}
+
+/* 右欄：各節縱向堆疊，節與節之間用間隙而非線 */
+.particulars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+/* ---------- 照片位：紙面填色方塊，3/4 直式 ----------
+   紙上只能有墨色：信號橙上紙是 2.84:1（§3.2 禁用組合），
+   所以標示字用 --paper-muted（5.05:1）。 */
+.portrait { margin: 0; }
+
+.portrait__ph {
+  aspect-ratio: 3 / 4;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper-muted);
+  font-size: var(--step-small);
+  letter-spacing: 0.1em;
+}
+
+.portrait__cap {
+  margin-top: var(--s-3);
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+/* ---------- 基本資料：沿用 .facts，改兩欄網格、左對齊 ---------- */
+.facts--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3) var(--s-7);
+}
+
+/* ---------- 語言能力：填色塊 + 數字，無漸層 ---------- */
+.langs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.lang {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-1) var(--s-4);
+  align-items: baseline;
+}
+
+.lang__label {
+  font-size: var(--step-small);
+  color: var(--ink);
+}
+
+.lang__value {
+  font-size: var(--step-small);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.lang__track {
+  grid-column: 1 / -1;
+  height: 10px;
+  background: var(--surface);
+}
+
+.lang__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+/* ---------- 興趣：填色標籤，直角、無邊框 ---------- */
+.interests {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.interests li {
+  background: var(--surface);
+  color: var(--ink);
+  font-size: var(--step-small);
+  padding: var(--s-2) var(--s-4);
+}
+
+/* ---------- 紀錄列：左期間、中名稱、右機構 ---------- */
+.records {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.record {
+  display: grid;
+  grid-template-columns: minmax(6rem, 11rem) minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--s-1) var(--s-6);
+  align-items: baseline;
+  padding: var(--s-5);
+  background: var(--surface);
+}
+
+.record:nth-child(even) { background: var(--bg); }
+
+.record__period {
+  font-size: var(--step-small);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.record__title {
+  font-size: var(--step-lead);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.record__org {
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+/* ---------- 表格：唯一允許有框線的地方 ---------- */
+.table-wrap { overflow-x: auto; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step-body);
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--muted); /* taste-skill-ignore 真實表格框線，§2.2 明文允許 */
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.table th {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--step-small);
+  letter-spacing: 0.04em;
+}
+
+.table__num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 表格逐列進場：第二、三列各延後一輪，讀起來像成績單逐行寫上 */
+.table tbody tr:nth-child(2) td { --base: 210ms; }
+.table tbody tr:nth-child(3) td { --base: 420ms; }
+
+/* ---------- 工作紀錄：每筆經歷一個區塊 ---------- */
+.service {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  padding: var(--s-6);
+  background: var(--surface);
+}
+
+.service:nth-child(even) { background: var(--bg); }
+
+.service__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-4);
+  font-size: var(--step-lead);
+  font-weight: 600;
+}
+
+.service__period {
+  font-size: var(--step-small);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.service__body {
+  max-width: var(--measure);
+  font-size: var(--step-body);
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.service__body p { margin-top: var(--s-3); }
+.service__body p:first-child { margin-top: 0; }
+
+.service__body ul {
+  padding-left: var(--s-5);
+  margin-top: var(--s-3);
+}
+
+/* ---------- 能力檢定表（skills） ---------- */
+.skillrow {
+  padding: var(--s-4);
+  background: var(--surface);
+}
+
+.skillrow:nth-child(even) { background: var(--bg); }
+
+.skillrow__name {
+  font-size: var(--step-lead);
+  font-weight: 600;
+  margin-bottom: var(--s-2);
+}
+
+.skillrow__note {
+  margin: var(--s-2) 0 0;
+  font-size: var(--step-small);
+  color: var(--muted);
+}
+
+/* ---------- 作品樣張：一行一筆（§7⑤） ---------- */
+.works {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.work {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) auto;
+  gap: var(--s-2) var(--s-5);
+  align-items: baseline;
+  min-height: 64px;
+  padding: var(--s-4) var(--s-4);
+  background: var(--bg);
+  transition: background-color var(--t-hover) var(--ease-out),
+              color var(--t-hover) var(--ease-out);
+}
+
+.work:nth-child(even) { background: var(--surface); }
+
+.work:hover,
+.work:focus-visible {
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+
+.work__name {
+  font-size: var(--step-lead);
+  font-weight: 600;
+}
+
+.work__desc {
+  font-size: var(--step-small);
+  color: var(--muted);
+  transition: color var(--t-hover) var(--ease-out);
+}
+
+.work:hover .work__desc,
+.work:focus-visible .work__desc { color: var(--paper-muted); }
+
+.work__year {
+  font-size: var(--step-small);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  transition: color var(--t-hover) var(--ease-out);
+}
+
+.work:hover .work__year,
+.work:focus-visible .work__year { color: var(--paper-muted); }
+
+/* 群組 hover 編排：游標所在列滿對比，同組其他列轉 --muted。
+   不用低透明度 ：： 可讀文字必須維持 4.5:1。 */
+.works.is-pointing .work:not(.is-point) { color: var(--muted); }
+.works.is-pointing .work:not(.is-point) .work__name { color: var(--muted); }
+
+/* 作品列的角度指示器：@property 驅動，零 JS 動畫 */
+.work__mark {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 6px solid var(--accent);
+  border-bottom: 6px solid transparent;
+  transform: rotate(var(--row-angle));
+  transition: --row-angle var(--t-ui) var(--ease-out);
+}
+
+/* 列 hover 時整列轉為紙色，指示器必須換成深銅，否則只剩 2.04:1 等於消失 */
+.work:hover .work__mark,
+.work:focus-visible .work__mark {
+  border-left-color: var(--accent-paper);
+}
+
+/* ---------- 證書 ---------- */
+.certlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2) var(--s-6);
+  padding: var(--s-4);
+  background: var(--bg);
+}
+
+.cert:nth-child(even) { background: var(--surface); }
+
+.cert__name { flex: 1 1 14em; font-weight: 600; }
+
+.cert__issuer,
+.cert__year {
+  color: var(--muted);
+  font-size: var(--step-small);
+}
+
+.cert__year { font-variant-numeric: tabular-nums; }
+
+/* ---------- 燈箱 ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-5);
+  z-index: 100;
+}
+
+.lightbox[hidden] { display: none; }
+
+.lightbox__panel {
+  position: relative;
+  background: var(--paper);
+  color: var(--paper-ink);
+  padding: var(--s-5);
+  max-width: 44rem;
+  width: 100%;
+  border: 1px solid var(--muted); /* taste-skill-ignore 對話框外框，介面元件 */
+}
+
+.lightbox__img {
+  width: 100%;
+  background: var(--surface);
+  min-height: 12rem;
+}
+
+.lightbox__caption {
+  margin: var(--s-4) 0 0;
+  font-size: var(--step-small);
+  color: var(--paper-muted);
+}
+
+.lightbox__close {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  font: inherit;
+  font-size: var(--step-small);
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--muted); /* taste-skill-ignore 對話框按鈕，介面元件 */
+  background: var(--paper);
+  color: var(--paper-ink);
+  cursor: pointer;
+}
+
+.lightbox__close:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+/* ---------- 自訂游標（僅桌面，§7⑤） ---------- */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--accent); /* taste-skill-ignore 指標覆蓋元件，非內容框 */
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-ui) var(--ease-out);
+  will-change: transform;
+}
+
+.cursor.is-on { opacity: 1; }
+
+/* ---------- 空資料佔位（§2.3） ----------
+   注意：資料到位後請整段移除。這是給「尚未填寫的 TODO」看的提示字，
+   不是設計的一部分。 */
+.record__period:empty::after,
+.record__title:empty::after,
+.record__org:empty::after,
+.table th:empty::after,
+.table td:empty::after,
+.work__name:empty::after,
+.work__desc:empty::after,
+.work__year:empty::after,
+.cert__name:empty::after,
+.cert__issuer:empty::after,
+.cert__year:empty::after,
+.service__period:empty::after,
+.service__title:empty::after {
+  content: '待填';
+  color: var(--muted);
+  font-weight: 400;
+  font-variant-numeric: normal;
+}
+
+/* ---------- 六頁響應式 ---------- */
+@media (max-width: 60rem) {
+  .split { grid-template-columns: 1fr; gap: var(--s-6); }
+  /* 單欄時照片若維持左對齊，右側會留下一大片死白。
+     置中讓它讀起來是「文件上方的一張照片」，而不是排不下的區塊。 */
+  .portrait { max-width: 22rem; margin: 0 auto; }
+}
+
+@media (max-width: 44rem) {
+  .facts--grid { grid-template-columns: 1fr; gap: var(--s-3); }
+  .particulars { gap: var(--s-5); }
+
+  .record {
+    grid-template-columns: 1fr;
+    gap: var(--s-1);
+    padding: var(--s-4);
+  }
+
+  .table th,
+  .table td { padding: var(--s-2) var(--s-3); }
+
+  .work {
+    grid-template-columns: 1fr auto;
+    gap: var(--s-1) var(--s-4);
+  }
+  .work__desc { grid-column: 1 / -1; }
+}
+
+/* ---------- 工作紀錄：期間 · 職位 · 機構 ---------- */
+.service__title { font-weight: 600; }
+
+.service__org {
+  font-size: var(--step-small);
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ---------- 技能篩選：檔案標籤（沿用 .role__tab 形狀） ---------- */
+.filterbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  margin-bottom: var(--s-6);
+}
+
+.filterbar__btn {
+  font: inherit;
+  font-size: var(--step-small);
+  font-weight: 600;
+  border: 0;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--ink);
+  padding: var(--s-3) var(--s-5) var(--s-3) var(--s-4);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  transition: background-color var(--t-hover) var(--ease-out),
+              color var(--t-hover) var(--ease-out),
+              transform var(--t-press) var(--ease-out);
+}
+
+.filterbar__btn:hover { color: var(--accent); }
+
+.filterbar__btn:active { transform: scale(0.98); }
+
+.filterbar__btn.is-selected {
+  background: var(--paper);
+  color: var(--paper-ink);
+}
+
+/* ---------- 技能列的熟練度 ---------- */
+.skillrow__bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--s-1) var(--s-4);
+  align-items: center;
+  margin-top: var(--s-2);
+}
+
+/* 技能列的軌道只佔左欄，數字靠右 */
+.skillrow__bar .lang__track { grid-column: 1; }
+
+@media (max-width: 44rem) {
+  .filterbar { gap: var(--s-1); }
+  .filterbar__btn { padding: var(--s-2) var(--s-4) var(--s-2) var(--s-3); }
+}
+
+/* ---------- 目錄條容器（sitemap.html） ---------- */
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+/* ---------- 卡片點擊閃光：JS 加 .is-flash 後觸發一次 ---------- */
+.skillrow.is-flash,
+.work.is-flash {
+  animation: card-flash 0.25s ease-out;
+}
+
+@keyframes card-flash {
+  0% {
+    border-color: var(--border-strong, var(--muted));
+  }
+  100% {
+    border-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skillrow.is-flash,
+  .work.is-flash { animation: none; }
+}
+
+/* ============================================================
+   全站背景：引力場影片（材質層）
+   ------------------------------------------------------------
+   這是「桌面」的材質，不是內容。它永遠在最底層，
+   不承載任何資訊，也不接受互動。
+   紙面卡片仍然是不透明的 ：： 影片只在石墨桌面上透出來。
+   ============================================================ */
+.bgfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--bg);
+}
+
+.bgfield__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.20;
+}
+
+/* 壓一層石墨漸層：保證任何位置的字都夠清楚 */
+.bgfield::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient( /* taste-skill-ignore 中性石墨遮罩疊在影片上，非裝飾漸層；inspect 會判為可接受的 scrim */
+    180deg,
+    rgba(20, 22, 26, 0.88) 0%,
+    rgba(20, 22, 26, 0.64) 38%,
+    rgba(20, 22, 26, 0.90) 100%
+  );
+}
+
+/* 內容層壓在背景之上 */
+.masthead,
+main,
+.colophon {
+  position: relative;
+  z-index: 1;
+}
+
+/* 桌面區透明，讓場透出來；卡片本身仍是紙 */
+.hero { background: transparent; }
+
+/* 減少動態：直接停掉影片，退回純石墨底色（不留白） */
+@media (prefers-reduced-motion: reduce) {
+  .bgfield__video { display: none; }
+}

@@ -3,106 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>教育背景 — 彭靖男 PENG Jing Nan</title>
+  <title>教育背景 · 彭靖男 PENG Jing Nan</title>
   <meta name="description" content="彭靖男的學歷、主修、就讀期間與相關課程紀錄。">
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dossier.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
-  <header>
-    <nav class="nav" aria-label="主導覽">
-      <div class="nav__inner">
-        <a href="index.html" class="nav__brand">PENG Jing Nan</a>
-        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
-        <ul class="nav__list" id="nav-list">
-          <li><a href="index.html" class="nav__link">Home</a></li>
-          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
-          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
-          <li><a href="education.html" class="nav__link">教育背景</a></li>
-          <li><a href="skills.html" class="nav__link">專精技能</a></li>
-          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
-          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
-        </ul>
-      </div>
+  <!-- 全站背景：引力場影片（材質層，不承載資訊、不接受互動） -->
+  <div class="bgfield" aria-hidden="true">
+    <video class="bgfield__video" autoplay muted loop playsinline preload="metadata">
+      <source src="assets/video/field.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <header class="masthead" id="top">
+    <a class="masthead__mark" href="index.html">彭靖男</a>
+    <nav class="masthead__links" aria-label="主導覽">
+      <a href="personal.html">個人資訊</a>
+      <a href="experience.html">工作經驗</a>
+      <a href="education.html" aria-current="page">教育背景</a>
+      <a href="skills.html">專精技能</a>
+      <a href="portfolio.html">作品集</a>
     </nav>
+    <a class="masthead__act" href="index.html#contact">聯絡</a>
   </header>
 
   <main>
-    <section class="page-header">
-      <h1 class="page-header__title">教育背景</h1>
-      <p class="page-header__lead">
+
+    <section class="pagehead">
+      <p class="pagehead__en" data-rise data-rise-as="rise">Transcript</p>
+      <h1 class="pagehead__cn" data-rise data-rise-as="rise">教育背景</h1>
+    </section>
+
+    <!-- ===== 學歷 ===== -->
+    <section class="block">
+      <p class="block__lead" data-rise data-rise-as="rise">
         <!-- TODO: 換成你的學歷概述 -->
         這一頁列出你的學歷、主修與修讀過的相關課程。
       </p>
+
+      <div class="block__head" data-rise data-rise-as="rise">
+        <h2>學歷</h2>
+      </div>
+
+      <ol class="records">
+        <li class="record" data-rise data-rise-as="rise">
+          <p class="record__period"><!-- TODO: 就讀期間，例如 2024-09 至今 --></p>
+          <h3 class="record__title"><!-- TODO: 學位／課程名稱 --></h3>
+          <p class="record__org"><!-- TODO: 學校名稱、主修、學制 -->就讀學校與主修學科。</p>
+        </li>
+
+        <li class="record" data-rise data-rise-as="rise">
+          <p class="record__period"><!-- TODO: 期間 --></p>
+          <h3 class="record__title"><!-- TODO: 學位／課程 --></h3>
+          <p class="record__org"><!-- TODO: 學校與主修 -->就讀學校與主修學科。</p>
+        </li>
+      </ol>
     </section>
 
-    <div class="page">
+    <!-- ===== 相關課程：R3-3 的實質內容 ===== -->
+    <section class="block">
+      <div class="block__head" data-rise data-rise-as="rise">
+        <h2>相關課程</h2>
+      </div>
 
-      <!-- 學歷 -->
-      <section class="panel">
-        <h2 class="panel__title">學歷</h2>
-        <ol class="timeline">
-          <li class="timeline__item">
-            <p class="timeline__period"><!-- TODO: 就讀期間，例如 2024-09 至今 --></p>
-            <h3 class="timeline__title"><!-- TODO: 學位／課程名稱 --></h3>
-            <p class="timeline__desc">
-              <!-- TODO: 學校名稱、主修、學制 -->
-              就讀學校與主修學科。
-            </p>
-          </li>
-          <li class="timeline__item">
-            <p class="timeline__period"><!-- TODO: 期間 --></p>
-            <h3 class="timeline__title"><!-- TODO: 學位／課程 --></h3>
-            <p class="timeline__desc">
-              <!-- TODO: 學校與主修 -->
-              就讀學校與主修學科。
-            </p>
-          </li>
-        </ol>
-      </section>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" data-rise data-rise-as="rise">課程名稱</th>
+              <th scope="col" class="table__num" data-rise data-rise-as="rise">學分</th>
+              <th scope="col" class="table__num" data-rise data-rise-as="rise">成績</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- TODO: 換成你實際修讀的課程；不足三行可刪除多餘 tr -->
+            <tr>
+              <td data-rise data-rise-as="rise"><!-- TODO: 課程名 --></td>
+              <td class="table__num" data-rise data-rise-as="rise"><!-- TODO: 學分 --></td>
+              <td class="table__num" data-rise data-rise-as="rise"><!-- TODO: 成績 --></td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise"><!-- TODO: 課程名 --></td>
+              <td class="table__num" data-rise data-rise-as="rise"><!-- TODO: 學分 --></td>
+              <td class="table__num" data-rise data-rise-as="rise"><!-- TODO: 成績 --></td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise"><!-- TODO: 課程名 --></td>
+              <td class="table__num" data-rise data-rise-as="rise"><!-- TODO: 學分 --></td>
+              <td class="table__num" data-rise data-rise-as="rise"><!-- TODO: 成績 --></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-      <!-- 相關課程：R3-3 的實質內容 -->
-      <section class="panel">
-        <h2 class="panel__title">相關課程</h2>
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">課程名稱</th>
-                <th scope="col">學分</th>
-                <th scope="col">成績</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- TODO: 換成你實際修讀的課程；不足三行可刪除多餘 tr -->
-              <tr>
-                <td><!-- TODO: 課程名 --></td>
-                <td><!-- TODO: 學分 --></td>
-                <td><!-- TODO: 成績 --></td>
-              </tr>
-              <tr>
-                <td><!-- TODO: 課程名 --></td>
-                <td><!-- TODO: 學分 --></td>
-                <td><!-- TODO: 成績 --></td>
-              </tr>
-              <tr>
-                <td><!-- TODO: 課程名 --></td>
-                <td><!-- TODO: 學分 --></td>
-                <td><!-- TODO: 成績 --></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-    </div>
   </main>
 
-  <footer class="footer">
-    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  <footer class="colophon" data-rise data-rise-as="fade">
+    <p class="colophon__name">Peng Jing Nan</p>
+    <p class="colophon__meta">
+      <a href="index.html">Home</a>
+      <a href="sitemap.html">Site Map</a>
+      <a href="#top">回到頂部</a>
+      <span>© 2026 彭靖男 · CIS222 Individual Assignment</span>
+    </p>
   </footer>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/site.js"></script>
 </body>
 </html>

@@ -3,177 +3,267 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Myself E-Portfolio</title>
-  <meta name="description" content="個人 e-portfolio 首頁，連結個人資訊、工作經驗、教育背景、專精技能與作品集五個內容頁。">
+  <title>彭靖男 PENG Jing Nan · 求職檔案</title>
+  <meta name="description" content="彭靖男的求職檔案：香港 Saint Francis University 計算及信息科學院學生，主修 AI &amp; ICT，曾參與學院官網三語翻新。">
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dossier.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
-  <!-- ===== header：導覽列 7 項，連結全部頁面（R2 在結構上自動成立）===== -->
-  <header>
-    <nav class="nav" aria-label="主導覽">
-      <div class="nav__inner">
-        <a href="index.html" class="nav__brand">Myself E-Portfolio</a>
-        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
-        <ul class="nav__list" id="nav-list">
-          <li><a href="index.html" class="nav__link">Home</a></li>
-          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
-          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
-          <li><a href="education.html" class="nav__link">教育背景</a></li>
-          <li><a href="skills.html" class="nav__link">專精技能</a></li>
-          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
-          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
-        </ul>
-      </div>
+  <!-- 全站背景：引力場影片（材質層，不承載資訊、不接受互動） -->
+  <div class="bgfield" aria-hidden="true">
+    <video class="bgfield__video" autoplay muted loop playsinline preload="metadata">
+      <source src="assets/video/field.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- 頁首：只有字，沒有外框與毛玻璃 -->
+  <header class="masthead">
+    <a class="masthead__mark" href="index.html">彭靖男</a>
+    <nav class="masthead__links" aria-label="主導覽">
+      <a href="personal.html">個人資訊</a>
+      <a href="experience.html">工作經驗</a>
+      <a href="education.html">教育背景</a>
+      <a href="skills.html">專精技能</a>
+      <a href="portfolio.html">作品集</a>
     </nav>
+    <a class="masthead__act" href="#contact">聯絡</a>
   </header>
 
-  <!-- ===== main ===== -->
   <main>
 
-    <!-- 首頁主視覺 -->
+    <!-- ===== 首屏：從檔案夾抽出一張申請卡 ===== -->
     <section class="hero">
+      <div class="hero__mask">
+        <span class="card__tab" aria-hidden="true"></span>
+        <div class="card__tilt">
+          <div class="card" data-paper data-paper-fill data-paper-tab data-paper-shadow>
+            <!-- 紙張材質層：canvas 只畫材質，文字全在 DOM（§4.7） -->
+            <canvas class="card__grain" data-paper-canvas aria-hidden="true"></canvas>
 
-      <!-- 首頁主標：單層文字，柔和淡入由 CSS 負責；
-           不使用任何故障字效、切片疊層或逐字拆分。 -->
-      <h1 class="hero__title">Myself<br>E-Portfolio</h1>
+            <h1 class="card__title"><span>Peng</span><span>Jing</span><span>Nan</span></h1>
 
-      <p class="hero__subtitle">PENG Jing Nan</p>
-      <p class="hero__desc">
-        主修 AI &amp; ICT，以後的目標就是努力創造更多的 AI 產品，打造更多懶人科技
-      </p>
-      <a href="personal.html" class="btn">展示更多</a>
-    </section>
+            <div class="card__body">
+              <dl class="facts">
+                <div><dt>現居</dt><dd>香港</dd></div>
+                <div><dt>就讀</dt><dd>Saint Francis University</dd></div>
+                <div><dt>主修</dt><dd>AI &amp; ICT</dd></div>
+              </dl>
+              <p class="card__line">目標是打造更多懶人科技。</p>
+            </div>
 
-    <!-- ===== 內容頁入口：3D 旋轉輪盤 =====
-         輪盤是首頁的導覽入口，點擊卡片仍跳轉到各自的獨立頁面，
-         因此 R3（各頁為獨立 html 檔）與 R2（頁面互連）皆不受影響。 -->
-    <section class="page">
-      <h2 class="section-title">內容導覽</h2>
-      <p class="section-lead">
-        拖曳輪盤或使用左右方向鍵切換，點擊卡片進入該頁。本站共七個頁面。
-      </p>
-
-      <div class="carousel-scene">
-        <div class="carousel" data-carousel>
-
-          <a href="personal.html" class="carousel__card">
-            <span class="carousel__icon" aria-hidden="true">01</span>
-            <h3 class="carousel__title">個人資訊</h3>
-            <p class="carousel__desc">基本資料、語言能力與興趣</p>
-          </a>
-
-          <a href="experience.html" class="carousel__card">
-            <span class="carousel__icon" aria-hidden="true">02</span>
-            <h3 class="carousel__title">工作經驗</h3>
-            <p class="carousel__desc">職位、期間與主要職責</p>
-          </a>
-
-          <a href="education.html" class="carousel__card">
-            <span class="carousel__icon" aria-hidden="true">03</span>
-            <h3 class="carousel__title">教育背景</h3>
-            <p class="carousel__desc">學歷、主修與相關課程</p>
-          </a>
-
-          <a href="skills.html" class="carousel__card">
-            <span class="carousel__icon" aria-hidden="true">04</span>
-            <h3 class="carousel__title">專精技能</h3>
-            <p class="carousel__desc">可篩選的技能分類與熟練度</p>
-          </a>
-
-          <a href="portfolio.html" class="carousel__card">
-            <span class="carousel__icon" aria-hidden="true">05</span>
-            <h3 class="carousel__title">作品集</h3>
-            <p class="carousel__desc">作品、專案與證書</p>
-          </a>
-
-          <a href="sitemap.html" class="carousel__card">
-            <span class="carousel__icon" aria-hidden="true">06</span>
-            <h3 class="carousel__title">Site Map</h3>
-            <p class="carousel__desc">全站結構與各頁用途</p>
-          </a>
-
+            <div class="card__foot">
+              <span class="card__credit">2026 · CIS222 個人作業</span>
+              <a class="btn" href="#work">看完整檔案</a>
+              <a class="card__link" href="#contact">直接聯絡</a>
+            </div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <p class="carousel__hint">&lt;&lt; 拖曳或方向鍵 &gt;&gt;</p>
+    <!-- ===== 互動：按職位翻閱同一份檔案 ===== -->
+    <section class="role" aria-label="依職位閱讀">
+      <div class="role__tabs" role="tablist" aria-label="選擇職位">
+        <button type="button" class="role__tab" role="tab" id="tab-web" aria-controls="panel-web" aria-selected="true" data-role-btn="web" data-rise data-rise-as="drop">前端實作</button>
+        <button type="button" class="role__tab" role="tab" id="tab-data" aria-controls="panel-data" aria-selected="false" data-role-btn="data" data-rise data-rise-as="drop">資料處理</button>
+        <button type="button" class="role__tab" role="tab" id="tab-ai" aria-controls="panel-ai" aria-selected="false" data-role-btn="ai" data-rise data-rise-as="drop">AI 應用</button>
+      </div>
 
-      <div class="carousel__dots">
-        <button type="button" class="carousel__dot is-active" aria-label="前往個人資訊"></button>
-        <button type="button" class="carousel__dot" aria-label="前往工作經驗"></button>
-        <button type="button" class="carousel__dot" aria-label="前往教育背景"></button>
-        <button type="button" class="carousel__dot" aria-label="前往專精技能"></button>
-        <button type="button" class="carousel__dot" aria-label="前往作品集"></button>
-        <button type="button" class="carousel__dot" aria-label="前往 Site Map"></button>
+      <div class="role__panels">
+        <div class="role__panel is-on" role="tabpanel" id="panel-web" aria-labelledby="tab-web" data-role-panel="web">
+          <p>把版面變成真的能跑的頁面：語義化標籤、可維護的 CSS 變數、不依賴框架的原生互動。</p>
+          <ul>
+            <li>HTML／CSS／JavaScript</li>
+            <li>學院官網 30 頁三語站</li>
+            <li>CIS222 Web Design and Development</li>
+          </ul>
+        </div>
+
+        <div class="role__panel" role="tabpanel" id="panel-data" aria-labelledby="tab-data" data-role-panel="data">
+          <p>把散落的資料整理成能用的結構：清理、歸納，再用腳本把重複的工作自動化。</p>
+          <ul>
+            <li>Python 自動化腳本</li>
+            <li>試算表整理與分析</li>
+            <li>CIS225 Data Structures</li>
+          </ul>
+        </div>
+
+        <div class="role__panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai" data-role-panel="ai">
+          <p>主修 AI &amp; ICT，目前以課程基礎為主，尚未有獨立完成的 AI 專案，這一欄如實留白。</p>
+          <ul>
+            <li>AI &amp; ICT 主修課程</li>
+            <li>CIS221 Calculus</li>
+            <li>正在累積，尚未有作品</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <!-- ===== 次要分段：技術與規格 ===== -->
-    <section class="page section-band">
-      <h2 class="section-title">技術規格</h2>
-      <p class="section-lead">本網站以三種技術構成，並於桌面與行動裝置皆可正常使用。</p>
+    <!-- ===== 文件頁：一封信 ===== -->
+    <section class="letter" id="about">
+      <div class="sheet" data-paper>
+        <!-- 紙張材質層：canvas 只畫材質（打孔處直接透出底下的桌面影片） -->
+        <canvas class="sheet__grain" data-paper-canvas aria-hidden="true"></canvas>
 
-      <div class="band-grid">
+        <p class="sheet__who" data-rise data-rise-as="rise">Peng Jing Nan</p>
+        <p class="sheet__cn" data-rise data-rise-as="rise">彭靖男</p>
 
-        <article class="band-item">
-          <h3 class="band-item__title">HTML</h3>
-          <p class="band-item__desc">
-            語義化標籤結構：header、nav、main、section、article、figure、footer。
-            全站七個頁面各自獨立，連結皆為相對路徑。
-          </p>
-        </article>
+        <p data-rise data-rise-as="rise">我是彭靖男，香港 Saint Francis University 計算及信息科學院的二年級生，主修 AI 與 ICT。</p>
 
-        <article class="band-item">
-          <h3 class="band-item__title">CSS</h3>
-          <p class="band-item__desc">
-            以變數集中管理配色與間距，採 mobile-first 響應式設計，
-            於 768px 與 1024px 兩個斷點調整排版。
-          </p>
-        </article>
+        <p data-rise data-rise-as="rise">2026 年暑假，我參與學院官網的翻新。起點是一個 90 年代風格的單頁網站：願景、使命、課程、研究、就業全部擠在同一頁，只有英文，在手機上幾乎不能讀。我們把它拆成 10 個頁面，做成英文、繁體中文、簡體中文三種語言，共 30 頁。</p>
 
-        <article class="band-item">
-          <h3 class="band-item__title">JavaScript</h3>
-          <p class="band-item__desc">
-            技能篩選、作品燈箱、導覽高亮、3D 輪盤與卡片點擊回饋，
-            全部程式碼置於單一外部檔案。
-          </p>
-        </article>
+        <p data-rise data-rise-as="rise">我在那裡學到的不是某個框架，而是<span class="sheet__mark">怎麼把一團混亂的資訊重新分類</span>，讓別人找得到東西。這件事比寫程式難，也比寫程式有用。</p>
 
-        <article class="band-item">
-          <h3 class="band-item__title">互動元件</h3>
-          <p class="band-item__desc">
-            技能分類篩選器、作品集燈箱、輪盤拖曳與鍵盤操作，
-            以及卡片點擊閃光回饋。
-          </p>
-        </article>
+        <p data-rise data-rise-as="rise">現在我在修資料結構、Web 開發與安全，並把學到的東西用在這個網站上。它是我自己寫的，沒用框架，也沒有任何外部依賴。</p>
 
-        <article class="band-item">
-          <h3 class="band-item__title">響應式</h3>
-          <p class="band-item__desc">
-            於 375px、768px、1440px 三種寬度下驗證無橫向捲動，
-            導覽列於窄螢幕改為hamburger 展開。
-          </p>
-        </article>
-
-        <article class="band-item">
-          <h3 class="band-item__title">效能</h3>
-          <p class="band-item__desc">
-            輪盤動畫以 requestAnimationFrame 驅動，分頁隱藏時即停止計算；
-            僅以 CSS 過渡處理回饋動效，不建立常駐特效節點。
-          </p>
-        </article>
-
+        <p class="sheet__sign" data-rise data-rise-as="rise">彭靖男</p>
+        <p class="sheet__role" data-rise data-rise-as="rise">AI &amp; ICT 學生 · 香港</p>
       </div>
+
+      <div class="stub">
+        <a class="stub__mail" href="mailto:example@email.com">example@email.com</a>
+        <span class="stub__note">（電郵為佔位，待本人替換）</span>
+      </div>
+    </section>
+
+    <!-- ===== 作品：三疊檔案夾 ===== -->
+    <section class="folders" id="work">
+      <div class="folders__head" data-rise data-rise-as="fade">
+        <h2>檔案內容</h2>
+        <p>三份紀錄，依時間排序。往下捲，它們會疊起來。</p>
+      </div>
+
+      <article class="folder folder--1" data-rise data-rise-as="fade">
+        <span class="folder__tab" aria-hidden="true" data-rise data-rise-as="wipe"></span>
+        <div>
+          <h3 class="folder__title">學院官網三語翻新</h3>
+          <p class="folder__meta"><span>2026-06 → 2026-08</span><span>團隊成員之一</span><span>30 頁 · 3 語言</span></p>
+        </div>
+        <p class="folder__desc">把單頁長文的舊官網重建為 10 個語義化頁面，再擴展成三語共 30 頁，並以 Python 模板批量生成、自動驗證結構一致性。</p>
+        <ul class="folder__list">
+          <li>資訊架構重整</li>
+          <li>三語切換</li>
+          <li>CSS 變數設計系統</li>
+          <li>Python 生成器</li>
+          <li>響應式與無障礙</li>
+        </ul>
+      </article>
+
+      <article class="folder folder--2" data-rise data-rise-as="fade">
+        <span class="folder__tab" aria-hidden="true" data-rise data-rise-as="wipe"></span>
+        <div>
+          <h3 class="folder__title">個人作品集（本網站）</h3>
+          <p class="folder__meta"><span>2026-10</span><span>獨立完成</span><span>7 頁 · 零依賴</span></p>
+        </div>
+        <p class="folder__desc">手寫 HTML、CSS 與原生 JavaScript，沒有框架、沒有建置流程、沒有 CDN；字體自架，全站以相對路徑互連。</p>
+        <ul class="folder__list">
+          <li>手寫 CSS 系統</li>
+          <li>原生 JS 互動</li>
+          <li>響應式版面</li>
+          <li>無外部請求</li>
+        </ul>
+      </article>
+
+      <article class="folder folder--3" data-rise data-rise-as="fade">
+        <span class="folder__tab" aria-hidden="true" data-rise data-rise-as="wipe"></span>
+        <div>
+          <h3 class="folder__title">課程專案</h3>
+          <p class="folder__meta"><span>2026 至今</span><span>修讀中</span><span>尚未公開</span></p>
+        </div>
+        <p class="folder__desc">Web 設計、資料結構、Web 開發與安全三門課的作業與練習。完成後會補上可公開的內容。</p>
+        <ul class="folder__list">
+          <li>CIS222</li>
+          <li>CIS225</li>
+          <li>CIS282</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- ===== 索引：大字 + 可展開橫條 ===== -->
+    <section class="index" id="index">
+      <div class="index__inner">
+        <div class="index__drift">
+          <div class="index__reveal" data-rise data-rise-as="mask">
+            <p class="index__word" aria-hidden="true">索引</p>
+          </div>
+        </div>
+
+        <div class="index__bars">
+          <details class="bar" open data-rise data-rise-as="push">
+            <summary>個人資訊 <span class="bar__sign">＋</span></summary>
+            <div class="bar__panel">
+              <span>基本資料、語言能力、興趣。</span>
+              <a href="personal.html">前往</a>
+            </div>
+          </details>
+
+          <details class="bar" data-rise data-rise-as="push">
+            <summary>工作經驗 <span class="bar__sign">＋</span></summary>
+            <div class="bar__panel">
+              <span>以時間軸列出職位、期間與主要職責。</span>
+              <a href="experience.html">前往</a>
+            </div>
+          </details>
+
+          <details class="bar" data-rise data-rise-as="push">
+            <summary>教育背景 <span class="bar__sign">＋</span></summary>
+            <div class="bar__panel">
+              <span>學歷、主修，以及相關課程與成績。</span>
+              <a href="education.html">前往</a>
+            </div>
+          </details>
+
+          <details class="bar" data-rise data-rise-as="push">
+            <summary>專精技能 <span class="bar__sign">＋</span></summary>
+            <div class="bar__panel">
+              <span>可依分類篩選的技能清單與熟練度。</span>
+              <a href="skills.html">前往</a>
+            </div>
+          </details>
+
+          <details class="bar" data-rise data-rise-as="push">
+            <summary>作品集 <span class="bar__sign">＋</span></summary>
+            <div class="bar__panel">
+              <span>作品與證書，可點擊放大檢視。</span>
+              <a href="portfolio.html">前往</a>
+            </div>
+          </details>
+
+          <details class="bar" data-rise data-rise-as="push">
+            <summary>Site Map <span class="bar__sign">＋</span></summary>
+            <div class="bar__panel">
+              <span>全站結構與各頁用途。</span>
+              <a href="sitemap.html">前往</a>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 聯絡：地址以展示級字排成列 ===== -->
+    <section class="contact" id="contact">
+      <div class="contact__row" data-rise data-rise-as="wipe"><span>Peng Jing Nan</span></div>
+      <div class="contact__row" data-rise data-rise-as="wipe"><span>香港</span></div>
+      <div class="contact__row" data-rise data-rise-as="wipe"><span>Saint Francis University</span></div>
+      <div class="contact__row" data-rise data-rise-as="wipe"><span><a href="https://github.com/Faixiang" rel="noopener">github.com/Faixiang</a></span></div>
+
+      <p class="contact__note" data-rise data-rise-as="fade">電郵尚未提供，目前以 GitHub 為聯絡入口。</p>
     </section>
 
   </main>
 
-  <!-- ===== footer ===== -->
-  <footer class="footer">
-    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  <footer class="colophon" data-rise data-rise-as="fade">
+    <p class="colophon__name">Peng Jing Nan</p>
+    <p class="colophon__meta">
+      <a href="index.html">Home</a>
+      <a href="sitemap.html">Site Map</a>
+      <a href="#about">回到頂部</a>
+      <span>© 2026 彭靖男 · CIS222 Individual Assignment</span>
+    </p>
   </footer>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/index.js"></script>
 </body>
 </html>

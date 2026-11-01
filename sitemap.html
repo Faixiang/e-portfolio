@@ -3,141 +3,177 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Site Map — 彭靖男 PENG Jing Nan</title>
+  <title>Site Map · 彭靖男 PENG Jing Nan</title>
   <meta name="description" content="本網站的完整站點地圖，列出全部七個頁面及其內容用途。">
   <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/dossier.css">
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
 
-  <header>
-    <nav class="nav" aria-label="主導覽">
-      <div class="nav__inner">
-        <a href="index.html" class="nav__brand">PENG Jing Nan</a>
-        <button type="button" class="nav__toggle" aria-expanded="false" aria-controls="nav-list" aria-label="開啟選單">☰</button>
-        <ul class="nav__list" id="nav-list">
-          <li><a href="index.html" class="nav__link">Home</a></li>
-          <li><a href="personal.html" class="nav__link">個人資訊</a></li>
-          <li><a href="experience.html" class="nav__link">工作經驗</a></li>
-          <li><a href="education.html" class="nav__link">教育背景</a></li>
-          <li><a href="skills.html" class="nav__link">專精技能</a></li>
-          <li><a href="portfolio.html" class="nav__link">作品集</a></li>
-          <li><a href="sitemap.html" class="nav__link">Site Map</a></li>
-        </ul>
-      </div>
+  <!-- 全站背景：引力場影片（材質層，不承載資訊、不接受互動） -->
+  <div class="bgfield" aria-hidden="true">
+    <video class="bgfield__video" autoplay muted loop playsinline preload="metadata">
+      <source src="assets/video/field.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <header class="masthead" id="top">
+    <a class="masthead__mark" href="index.html">彭靖男</a>
+    <nav class="masthead__links" aria-label="主導覽">
+      <a href="personal.html">個人資訊</a>
+      <a href="experience.html">工作經驗</a>
+      <a href="education.html">教育背景</a>
+      <a href="skills.html">專精技能</a>
+      <a href="portfolio.html">作品集</a>
     </nav>
+    <a class="masthead__act" href="index.html#contact">聯絡</a>
   </header>
 
   <main>
-    <section class="page-header">
-      <h1 class="page-header__title">Site Map</h1>
-      <p class="page-header__lead">本網站共七個頁面，以下為完整站點結構與各頁用途說明。</p>
+
+    <section class="pagehead">
+      <p class="pagehead__en" data-rise data-rise-as="rise">Contents</p>
+      <h1 class="pagehead__cn" data-rise data-rise-as="rise">Site Map</h1>
     </section>
 
-    <div class="page">
+    <!-- ===== R4：站點結構以目錄條呈現，每頁一條，展開顯示用途 ===== -->
+    <section class="block">
+      <p class="block__lead" data-rise data-rise-as="rise">
+        本網站共七個頁面，以下為完整站點結構與各頁用途說明。
+      </p>
 
-      <section class="panel">
-        <h2 class="panel__title">網站結構</h2>
+      <div class="block__head" data-rise data-rise-as="rise">
+        <h2>網站結構</h2>
+      </div>
 
-        <!-- ===== R4：以巢狀結構呈現頁面樹，非單純連結清單 ===== -->
-        <ul class="sitemap">
+      <div class="bars">
+        <details class="bar" open data-rise data-rise-as="push">
+          <summary>Home <span class="bar__sign">＋</span></summary>
+          <div class="bar__panel">
+            <span>首頁。求職檔案的封面：申請卡、職位分頁、一封信、三疊檔案夾與索引。</span>
+            <a href="index.html">前往</a>
+          </div>
+        </details>
 
-          <li class="sitemap__node">
-            <a href="index.html" class="sitemap__link">index.html</a>
-            <p class="sitemap__desc">首頁。自我介紹摘要，並以卡片連至四個主要內容頁。</p>
+        <details class="bar" data-rise data-rise-as="push">
+          <summary>個人資訊 <span class="bar__sign">＋</span></summary>
+          <div class="bar__panel">
+            <span>基本資料、語言能力、興趣與個人照片。</span>
+            <a href="personal.html">前往</a>
+          </div>
+        </details>
 
-            <ul class="sitemap__children">
-              <li class="sitemap__node">
-                <a href="personal.html" class="sitemap__link">personal.html</a>
-                <p class="sitemap__desc">個人資訊。基本資料、語言能力、興趣與個人照片。</p>
-              </li>
-              <li class="sitemap__node">
-                <a href="experience.html" class="sitemap__link">experience.html</a>
-                <p class="sitemap__desc">工作經驗。以時間軸列出職位、期間與主要職責。</p>
-              </li>
-              <li class="sitemap__node">
-                <a href="education.html" class="sitemap__link">education.html</a>
-                <p class="sitemap__desc">教育背景。學歷、主修，以及相關課程與成績表格。</p>
-              </li>
-              <li class="sitemap__node">
-                <a href="skills.html" class="sitemap__link">skills.html</a>
-                <p class="sitemap__desc">專精技能。可依分類篩選的技能清單與熟練度條。</p>
-              </li>
-              <li class="sitemap__node">
-                <a href="portfolio.html" class="sitemap__link">portfolio.html</a>
-                <p class="sitemap__desc">作品集與證書。作品支援點擊放大檢視。</p>
-              </li>
-            </ul>
-          </li>
+        <details class="bar" data-rise data-rise-as="push">
+          <summary>工作經驗 <span class="bar__sign">＋</span></summary>
+          <div class="bar__panel">
+            <span>以紀錄帳列出職位、期間、機構與主要職責。</span>
+            <a href="experience.html">前往</a>
+          </div>
+        </details>
 
-          <li class="sitemap__node">
-            <a href="sitemap.html" class="sitemap__link">sitemap.html</a>
-            <p class="sitemap__desc">站點地圖（即本頁）。列出全站結構與各頁用途。</p>
-          </li>
+        <details class="bar" data-rise data-rise-as="push">
+          <summary>教育背景 <span class="bar__sign">＋</span></summary>
+          <div class="bar__panel">
+            <span>學歷、主修，以及相關課程與成績表格。</span>
+            <a href="education.html">前往</a>
+          </div>
+        </details>
 
-        </ul>
-      </section>
+        <details class="bar" data-rise data-rise-as="push">
+          <summary>專精技能 <span class="bar__sign">＋</span></summary>
+          <div class="bar__panel">
+            <span>可依分類篩選的技能清單與熟練度。</span>
+            <a href="skills.html">前往</a>
+          </div>
+        </details>
 
-      <!-- 需求對照表：說明每頁對應作業的哪一項要求 -->
-      <section class="panel">
-        <h2 class="panel__title">頁面與作業要求對照</h2>
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">頁面</th>
-                <th scope="col">對應要求</th>
-                <th scope="col">主要內容</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>index.html</td>
-                <td>首頁</td>
-                <td>自我介紹 · 內容導覽</td>
-              </tr>
-              <tr>
-                <td>personal.html</td>
-                <td>Personal information</td>
-                <td>基本資料 · 語言 · 興趣</td>
-              </tr>
-              <tr>
-                <td>experience.html</td>
-                <td>Working experience</td>
-                <td>時間軸 · 職位 · 職責</td>
-              </tr>
-              <tr>
-                <td>education.html</td>
-                <td>Education background</td>
-                <td>學歷 · 主修 · 課程成績</td>
-              </tr>
-              <tr>
-                <td>skills.html</td>
-                <td>Special skill</td>
-                <td>技能篩選器 · 熟練度</td>
-              </tr>
-              <tr>
-                <td>portfolio.html</td>
-                <td>Any other related information</td>
-                <td>作品燈箱 · 證書</td>
-              </tr>
-              <tr>
-                <td>sitemap.html</td>
-                <td>Site Map</td>
-                <td>網站結構 · 需求對照</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <details class="bar" data-rise data-rise-as="push">
+          <summary>作品集 <span class="bar__sign">＋</span></summary>
+          <div class="bar__panel">
+            <span>作品與證書，作品支援點擊放大檢視。</span>
+            <a href="portfolio.html">前往</a>
+          </div>
+        </details>
 
-    </div>
+        <details class="bar" data-rise data-rise-as="push">
+          <summary>Site Map <span class="bar__sign">＋</span></summary>
+          <div class="bar__panel">
+            <span>全站結構與各頁用途（即本頁）。</span>
+            <a href="sitemap.html">前往</a>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ===== 需求對照表：說明每頁對應作業的哪一項要求 ===== -->
+    <section class="block">
+      <div class="block__head" data-rise data-rise-as="rise">
+        <h2>頁面與作業要求對照</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" data-rise data-rise-as="rise">頁面</th>
+              <th scope="col" data-rise data-rise-as="rise">對應要求</th>
+              <th scope="col" data-rise data-rise-as="rise">主要內容</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-rise data-rise-as="rise">index.html</td>
+              <td data-rise data-rise-as="rise">首頁</td>
+              <td data-rise data-rise-as="rise">自我介紹 · 內容導覽</td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise">personal.html</td>
+              <td data-rise data-rise-as="rise">Personal information</td>
+              <td data-rise data-rise-as="rise">基本資料 · 語言 · 興趣</td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise">experience.html</td>
+              <td data-rise data-rise-as="rise">Working experience</td>
+              <td data-rise data-rise-as="rise">紀錄帳 · 職位 · 職責</td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise">education.html</td>
+              <td data-rise data-rise-as="rise">Education background</td>
+              <td data-rise data-rise-as="rise">學歷 · 主修 · 課程成績</td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise">skills.html</td>
+              <td data-rise data-rise-as="rise">Special skill</td>
+              <td data-rise data-rise-as="rise">技能篩選器 · 熟練度</td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise">portfolio.html</td>
+              <td data-rise data-rise-as="rise">Any other related information</td>
+              <td data-rise data-rise-as="rise">作品燈箱 · 證書</td>
+            </tr>
+            <tr>
+              <td data-rise data-rise-as="rise">sitemap.html</td>
+              <td data-rise data-rise-as="rise">Site Map</td>
+              <td data-rise data-rise-as="rise">網站結構 · 需求對照</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
-  <footer class="footer">
-    <p>© 2026 彭靖男 PENG Jing Nan — CIS222 Individual Assignment</p>
+  <footer class="colophon" data-rise data-rise-as="fade">
+    <p class="colophon__name">Peng Jing Nan</p>
+    <p class="colophon__meta">
+      <a href="index.html">Home</a>
+      <a href="sitemap.html">Site Map</a>
+      <a href="#top">回到頂部</a>
+      <span>© 2026 彭靖男 · CIS222 Individual Assignment</span>
+    </p>
   </footer>
 
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/site.js"></script>
 </body>
 </html>
